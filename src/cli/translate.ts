@@ -7,6 +7,8 @@
 import https from "node:https";
 
 export interface Translator {
+  /** Identifier recorded in the bundle so a model switch can invalidate reuse. */
+  readonly model: string;
   translateCell(
     source: string,
     locale: string,
@@ -21,6 +23,8 @@ export interface Translator {
 }
 
 export class StubTranslator implements Translator {
+  readonly model = "stub";
+
   async translateCell(
     source: string,
     locale: string,
@@ -80,7 +84,7 @@ export class OpenRouterTranslator implements Translator {
     progress?: (msg: string) => void;
   } = {}) {
     this.apiKey = opts.apiKey ?? process.env["OPENROUTER_API_KEY"] ?? "";
-    this.model = opts.model ?? "anthropic/claude-haiku-4-5";
+    this.model = opts.model ?? "google/gemini-2.5-flash";
     this.timeout = opts.timeoutMs ?? 60_000;
     this.retries = opts.retries ?? 3;
     this.progress = opts.progress ?? (() => {});

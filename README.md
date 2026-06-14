@@ -169,6 +169,7 @@ stringlocale compile \
 | `--locales <tags...>` | required | Target locales — full `language-REGION` tags (`ne-NP`, not `ne`) |
 | `--out <dir>` | `dist` | Output directory |
 | `--source-locale <tag>` | `en` | Locale of the source strings |
+| `--model <id>` | `google/gemini-2.5-flash` | OpenRouter model used to draft translations (env: `STRINGLOCALE_MODEL`) |
 | `--combined` | off | Emit one `bundle.json` instead of split per-locale files |
 | `--no-incremental` | off | Re-draft every cell instead of reusing unchanged ones |
 | `--stub` | off | Use the offline deterministic stub translator |
@@ -196,6 +197,13 @@ key set** (or with `--stub`), the compiler falls back to the deterministic
 **Incremental.** By default the compiler loads the previous bundle from `--out`
 and reuses any cell whose source text is unchanged, so only new or edited strings
 hit the translator. `--no-incremental` forces a full redraft.
+
+**Model.** The model that produced a bundle is recorded in the manifest (and in
+each bundle file). When you compile with a different `--model`, that reuse is
+invalidated and **every translation is redrafted** with the new model, so a
+bundle never mixes output from two models. Defaults to
+`google/gemini-2.5-flash`; override per run with `--model` or globally with the
+`STRINGLOCALE_MODEL` env var.
 
 **Output** — a manifest plus one file per locale (or a single combined bundle):
 

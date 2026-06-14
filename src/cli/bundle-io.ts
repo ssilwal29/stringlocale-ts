@@ -38,6 +38,7 @@ function readSplitBundle(outDir: string, manifestPath: string): BundleData {
     source_locale: manifest.source_locale,
     locales: [...manifest.locales],
     entries: {},
+    model: manifest.model,
   };
 
   for (const [locale, filename] of Object.entries(manifest.files)) {
@@ -105,6 +106,7 @@ function writeSplit(bundle: BundleData, outDir: string): string[] {
       source_locale: bundle.source_locale,
       locales: [locale],
       entries: localeEntries,
+      model: bundle.model,
     };
     const path = join(outDir, filename);
     writeFileSync(path, JSON.stringify(localeBundle, null, 2));
@@ -117,6 +119,7 @@ function writeSplit(bundle: BundleData, outDir: string): string[] {
     source_locale: bundle.source_locale,
     locales: bundle.locales,
     files,
+    model: bundle.model,
   };
   const manifestPath = join(outDir, "manifest.json");
   writeFileSync(manifestPath, JSON.stringify(manifest, null, 2));

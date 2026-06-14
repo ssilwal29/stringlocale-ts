@@ -49,6 +49,8 @@ export interface BundleData {
   source_locale: string;
   locales: string[];
   entries: Record<string, Entry>;
+  /** Translator model that produced this bundle (e.g. "google/gemini-2.5-flash", "stub"). */
+  model?: string;
 }
 
 export interface ManifestData {
@@ -56,6 +58,8 @@ export interface ManifestData {
   source_locale: string;
   locales: string[];
   files: Record<string, string>;
+  /** Translator model that produced these bundles. */
+  model?: string;
 }
 
 /**

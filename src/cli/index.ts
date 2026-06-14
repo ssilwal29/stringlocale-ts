@@ -66,6 +66,7 @@ interface ParsedArgs {
   stub: boolean;
   strictDiscover: boolean;
   maxWorkers: number | undefined;
+  model: string;
   openrouterTimeout: number;
   openrouterRetries: number;
   help: boolean;
@@ -83,6 +84,7 @@ function parseArgs(argv: string[]): ParsedArgs {
     stub: false,
     strictDiscover: false,
     maxWorkers: undefined,
+    model: process.env["STRINGLOCALE_MODEL"] ?? "google/gemini-2.5-flash",
     openrouterTimeout: Number(process.env["STRINGLOCALE_OPENROUTER_TIMEOUT"] ?? 60),
     openrouterRetries: Number(process.env["STRINGLOCALE_OPENROUTER_RETRIES"] ?? 3),
     help: false,
@@ -142,6 +144,9 @@ function parseArgs(argv: string[]): ParsedArgs {
       case "--max-workers":
         args.maxWorkers = Number(next("--max-workers"));
         break;
+      case "--model":
+        args.model = next("--model");
+        break;
       case "--openrouter-timeout":
         args.openrouterTimeout = Number(next("--openrouter-timeout"));
         break;
@@ -189,6 +194,7 @@ async function cmdCompile(args: ParsedArgs): Promise<number> {
     translator = new StubTranslator();
   } else {
     translator = new OpenRouterTranslator({
+      model: args.model,
       timeoutMs: args.openrouterTimeout * 1000,
       retries: args.openrouterRetries,
       progress,
@@ -206,6 +212,14 @@ async function cmdCompile(args: ParsedArgs): Promise<number> {
     try {
       previous = readBundle(args.out);
       progress(`loaded previous bundle (${Object.keys(previous.entries).length} string(s))`);
+      // A model switch invalidates every reused cell: redraft from scratch so
+      // the whole bundle reflects one model.
+      if (previous.model && previous.model !== translator.model) {
+        progress(
+          `model changed (${previous.model} -> ${translator.model}); redrafting all translations`,
+        );
+        previous = null;
+      }
     } catch {
       progress("no previous bundle found; all cells will be drafted");
     }

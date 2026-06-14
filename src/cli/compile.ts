@@ -210,7 +210,13 @@ export async function compileStrings(
     );
   }
 
-  return { version: BUNDLE_VERSION, source_locale: sourceLocale, locales, entries };
+  return {
+    version: BUNDLE_VERSION,
+    source_locale: sourceLocale,
+    locales,
+    entries,
+    model: translator.model,
+  };
 }
 
 export function cellCount(bundle: BundleData): number {
