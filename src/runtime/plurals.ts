@@ -2,9 +2,8 @@
  * CLDR plural category selection.
  *
  * Uses the platform's `Intl.PluralRules` (CLDR-backed, ~full coverage) when
- * available — the browser/Node equivalent of Babel in the Python runtime —
- * with a handwritten fallback table for environments that lack it, so the
- * categories match across the two runtimes.
+ * available, with a handwritten fallback table for environments that lack it,
+ * so categories stay consistent everywhere.
  */
 
 export type PluralCategory = "zero" | "one" | "two" | "few" | "many" | "other";
@@ -37,7 +36,7 @@ function intlCategory(locale: string, n: number): PluralCategory | null {
   }
 }
 
-/** Handwritten rules for common families, matching the Python fallback. */
+/** Handwritten rules for common families, used when `Intl.PluralRules` is unavailable. */
 function fallbackCategory(lang: string, n: number): PluralCategory {
   n = Math.abs(n);
   if (["ja", "zh", "ko", "th", "vi", "id", "ms"].includes(lang)) return "other";

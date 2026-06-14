@@ -3,8 +3,7 @@
  *
  * Expands a locale into the ordered list the resolver tries before dropping
  * to source: `ne-NP -> ne -> source`. Custom chains override truncation.
- * Mirrors Python `runtime/locale.py` (minus thread-local active state, which
- * the TS runtime keeps on the Store / React context instead).
+ * Active state lives on the Store / React context rather than a thread-local.
  */
 const customChains = new Map<string, string[]>();
 

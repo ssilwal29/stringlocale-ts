@@ -2,7 +2,7 @@
  * Check command: CI gate that fails when the compiled bundle is out of sync
  * with the registered strings.
  *
- * Reports four problem classes (mirrors Python `compile.check`):
+ * Reports four problem classes:
  *   missing   — id registered in source but absent from bundle
  *   orphaned  — id present in bundle but not in source
  *   stale     — bundle entry's recorded source text differs from current source

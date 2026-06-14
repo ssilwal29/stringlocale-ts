@@ -1,6 +1,5 @@
 /**
- * Registry of declared StringLocale objects, keyed by id.
- * Mirrors Python `registry.py`. Duplicate ids throw.
+ * Registry of declared StringLocale objects, keyed by id. Duplicate ids throw.
  *
  * The Map is pinned to `globalThis` under a shared key so there is exactly one
  * registry per process, even when more than one copy of this module is loaded —

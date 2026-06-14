@@ -1,5 +1,5 @@
 /**
- * Bundle I/O: read and write the Python compiler's output format.
+ * Bundle I/O: read and write the compiled bundle format.
  *
  * Supports two layouts:
  *   combined — one bundle.json with all locales

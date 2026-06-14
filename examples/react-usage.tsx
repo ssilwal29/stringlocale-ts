@@ -1,7 +1,7 @@
 /**
  * React usage — strings live in their own module, imported wherever needed.
  *
- *   strings.ts ─ declarations (also the source the Python CLI compiles)
+ *   strings.ts ─ declarations (the source the compiler reads)
  *   App.tsx    ─ provider + components calling t() / <Tr>
  */
 

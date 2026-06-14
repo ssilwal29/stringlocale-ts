@@ -1,6 +1,6 @@
 /**
  * Template handling: `{placeholder}` extraction and substitution.
- * `{{` / `}}` escape literal braces. Mirrors Python `template.py`.
+ * `{{` / `}}` escape literal braces.
  */
 
 // match {name} not preceded/followed by another brace

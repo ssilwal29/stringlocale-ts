@@ -1,7 +1,7 @@
 /**
  * Runtime store: holds compiled entries and serves them to resolve().
  *
- * Two construction paths, both reading the Python compiler's output:
+ * Two construction paths, both reading the compiled bundles:
  *   - `Store.fromData(bundle)` — a combined bundle object already in memory.
  *   - `Store.fromManifest(manifest, loader)` — split per-locale, lazily
  *     fetching each `bundle.<locale>.json` on demand via the loader.

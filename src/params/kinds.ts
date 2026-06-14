@@ -1,11 +1,10 @@
 /**
- * Parameter kinds — the TypeScript mirror of `stringlocale.params`.
+ * Parameter kinds.
  *
  * Each param declares *how* an interpolated value resolves at runtime.
  * Construct via the helpers (`Param.literal()`, `Param.number()`, ...) so the
- * kind-specific fields stay coherent. The serialized form is identical to the
- * Python `ParamDict`, so declarations made here compile against the same
- * bundles.
+ * kind-specific fields stay coherent. The serialized form matches the on-disk
+ * `ParamDict`, so declarations compile against the bundle format.
  */
 import type { DateFmt, ParamDict, ParamKind } from "../bundle";
 

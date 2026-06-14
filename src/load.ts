@@ -1,5 +1,5 @@
 /**
- * Convenience loaders that turn the Python compiler's output into a Store.
+ * Convenience loaders that turn the compiler's output into a Store.
  *
  *   - `loadCombined(bundle)` — a `bundle.json` already parsed.
  *   - `loadManifest(manifest, fetcher)` — split layout; `fetcher(filename)`

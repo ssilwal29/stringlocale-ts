@@ -1,15 +1,14 @@
 /**
- * The one object: declaration *and* resolver — the TS mirror of Python
- * `core.StringLocale`.
+ * The one object: declaration *and* resolver.
  *
  * `new StringLocale("Welcome, {name}", { id, params })` declares a string and
- * registers it (so a future TS compiler/discovery step can find it; the
- * canonical compiler today is the Python CLI). `.resolve()` renders it.
+ * registers it so `stringlocale compile` can discover it. `.resolve()` renders
+ * it.
  *
- * Difference from Python: there is no thread-local "active locale". Resolution
- * needs a `ResolveContext` (store + locale). App code rarely calls this
- * directly — the React `useTranslation`/`<Tr>` layer threads the context from
- * a provider, so components only ever call `t(str, args)`.
+ * There is no thread-local "active locale": resolution needs a `ResolveContext`
+ * (store + locale). App code rarely calls this directly — the React
+ * `useTranslation`/`<Tr>` layer threads the context from a provider, so
+ * components only ever call `t(str, args)`.
  */
 import type { Entry, ParamDict } from "./bundle";
 import { SOURCE, cellKey } from "./bundle";

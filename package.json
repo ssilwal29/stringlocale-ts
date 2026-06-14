@@ -1,7 +1,7 @@
 {
   "name": "stringlocale",
   "version": "0.1.0",
-  "description": "LLM-powered, build-time localization with a pure-lookup offline runtime. TypeScript/React runtime reading the same bundles as the Python compiler.",
+  "description": "LLM-powered, build-time localization with a pure-lookup offline runtime for TypeScript and React.",
   "type": "module",
   "license": "MIT",
   "author": "Sajan Silwal",

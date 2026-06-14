@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * stringlocale CLI — TypeScript mirror of the Python CLI.
+ * stringlocale CLI.
  *
  * Subcommands:
  *   compile   discover strings, draft translations, write bundles

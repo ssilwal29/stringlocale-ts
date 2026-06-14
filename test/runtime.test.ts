@@ -85,7 +85,7 @@ function declareAll() {
 }
 
 describe("formatters", () => {
-  it("converts digits like the Python runtime", () => {
+  it("converts digits to native numerals", () => {
     expect(convertDigits("1200", "ne-NP")).toBe("१२००");
     expect(convertDigits("1200", "ar")).toBe("١٢٠٠");
     expect(convertDigits("1200", "en")).toBe("1200");
@@ -102,7 +102,7 @@ describe("plural categories", () => {
   });
 });
 
-describe("resolve against Python-compiled bundle", () => {
+describe("resolve against a compiled bundle", () => {
   let s: ReturnType<typeof declareAll>;
   let store: Store;
 

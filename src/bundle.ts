@@ -1,16 +1,13 @@
 /**
- * Compiled bundle format — the contract shared with the Python compiler.
- *
- * The TypeScript runtime reads the exact same JSON that
- * `stringlocale compile` writes (split per-locale or combined), so a
- * full-stack app shares one set of compiled translations across backend
- * and frontend.
+ * Compiled bundle format — the on-disk contract between the compiler and the
+ * runtime. `stringlocale compile` writes this JSON (split per-locale or
+ * combined) and the runtime reads it back, unchanged.
  */
 
 export const BUNDLE_VERSION = 1;
 export const SOURCE = "__source__";
 
-/** A param's serialized shape (mirrors Python `Param.to_dict`). */
+/** A param's serialized shape. */
 export interface ParamDict {
   kind: ParamKind;
   values?: string[];
@@ -64,7 +61,7 @@ export interface ManifestData {
 /**
  * Build the canonical cell key from axis selections: `axis=value` pairs
  * sorted by axis name, joined by `|`. The empty key is the base template.
- * Must match Python `bundle.cell_key`.
+ * Shared by the compiler and the runtime so keys always agree.
  */
 export function cellKey(axisValues: Record<string, string>): string {
   const keys = Object.keys(axisValues).sort();

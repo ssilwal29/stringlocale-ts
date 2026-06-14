@@ -2,7 +2,7 @@
  * Compile command: discover registered StringLocale objects, translate every
  * cell for each target locale, and write the bundle(s) to disk.
  *
- * Mirrors Python `stringlocale compile`:
+ * What it does:
  *   - Stub translation when OPENROUTER_API_KEY is absent or --stub is passed.
  *   - Incremental reuse: cells whose source text is unchanged are copied from
  *     the previous bundle without a translator round-trip.

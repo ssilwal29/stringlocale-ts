@@ -3,8 +3,8 @@
  *
  * Uses the platform `Intl` APIs (`NumberFormat`, `DateTimeFormat`,
  * `RelativeTimeFormat`) — the browser-native CLDR source — with compact
- * fallbacks otherwise. Digit conversion is handwritten so it works regardless,
- * and matches the Python runtime's digit bases exactly.
+ * fallbacks otherwise. Digit conversion is handwritten so it works regardless
+ * of `Intl` availability.
  */
 
 const DIGIT_BASES: Record<string, number> = {
@@ -38,7 +38,7 @@ export function convertDigits(text: string, locale: string): string {
 
 export function formatNumber(n: number, locale: string): string {
   // Force ASCII digits from Intl, then apply our own digit conversion so the
-  // output is byte-identical to the Python runtime (which converts ASCII).
+  // output is stable regardless of how the platform localizes digits.
   let s: string;
   if (HAVE_INTL) {
     try {

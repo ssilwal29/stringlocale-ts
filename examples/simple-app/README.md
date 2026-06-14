@@ -156,8 +156,8 @@ This demo calls `t()` directly. The package also exports a declarative
 equivalent, `<Tr str={fee} creator="Jane Doe" amount={2500} />`, if you prefer
 JSX over a function call.
 
-The same compiled bundles are read identically by the Python runtime, so a
-full-stack app shares one localization artifact across backend and frontend.
+The compiled bundles are plain JSON, so the same artifact can be reused by any
+runtime that reads the format.
 
 ---
 

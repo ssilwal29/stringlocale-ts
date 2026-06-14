@@ -1,9 +1,8 @@
 /**
  * stringlocale — LLM-powered, build-time localization with an offline runtime.
  *
- * The TypeScript runtime reads the exact bundles produced by the Python
- * `stringlocale compile` CLI, so backend and frontend share one set of
- * compiled translations.
+ * The runtime reads the bundles produced by `stringlocale compile` and renders
+ * them with native `Intl` formatting — no translation API at runtime.
  *
  *   import { StringLocale, Param } from "stringlocale";
  *   import { StringLocaleProvider, useTranslation } from "stringlocale/react";

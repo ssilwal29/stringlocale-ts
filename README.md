@@ -21,8 +21,8 @@ looks them up — digits, currency, dates, and plurals formatted by the platform
 `Intl` APIs, with no translation API call.
 
 This package is the **TypeScript/React runtime plus a CLI** (`compile`, `check`,
-`prune`), reading and writing the same bundle format as the Python `stringlocale`
-compiler — so backend and frontend share one set of translations.
+`prune`). The compiler writes plain-JSON locale bundles and the runtime reads
+them back — one portable set of translations.
 
 ## Quick start
 
@@ -225,12 +225,7 @@ same layout.
 > **Note on `.ts` sources.** The published `stringlocale` bin runs under plain
 > Node, which can't import `.ts` files. Point `--sources` at compiled JS, or run
 > the CLI through a TypeScript loader (e.g. `tsx`) when discovering `.ts`
-> declarations directly. If your source of truth is Python, the Python CLI takes
-> `--sources strings.py` and writes the identical bundle format.
-
-> **`dashboard`.** The Python CLI also ships a `dashboard` command (a static HTML
-> translation editor); the TypeScript CLI currently implements `compile`,
-> `check`, and `prune` only.
+> declarations directly.
 
 ## Resolving
 
@@ -305,12 +300,11 @@ Offline by default — no LLM, translation API, or remote service is called whil
 your app runs; it only resolves already-compiled translations. Formatting uses
 `Intl.NumberFormat`, `Intl.PluralRules`, `Intl.DateTimeFormat`, and
 `Intl.RelativeTimeFormat`, with a handwritten fallback table for environments
-that lack `Intl`, matching the Python runtime.
+that lack `Intl`.
 
-Because the bundle format is shared with the Python compiler, the same compiled
-artifact resolves identically across a Python backend and a TS/React frontend —
-including fallback chains, plural forms, digit conversion, gender/custom axes,
-and enum substitution.
+The compiled bundle is a plain, portable JSON artifact, so the same translations
+can be reused anywhere that reads the format — covering fallback chains, plural
+forms, digit conversion, gender/custom axes, and enum substitution.
 
 LLM-drafted translations are written to plain JSON, so you can review, diff, and
 version them like any other build artifact before shipping.
@@ -320,5 +314,5 @@ version them like any other build artifact before shipping.
 ```bash
 npm run build       # tsup -> ESM + CJS + .d.ts (runtime, react, cli)
 npm run typecheck
-npm test            # vitest, resolving against Python-compiled fixtures
+npm test            # vitest, resolving against compiled bundle fixtures
 ```
