@@ -62,16 +62,7 @@
           "kind": "plural"
         }
       },
-      "axes": {
-        "plural": [
-          "zero",
-          "one",
-          "two",
-          "few",
-          "many",
-          "other"
-        ]
-      },
+      "axes": {},
       "cells": {
         "ne-NP": {
           "plural=one": "तपाईंसँग {count} सन्देश छ",
@@ -166,6 +157,49 @@
       },
       "hashes": {
         "ne-NP::": "dbebcf8980b084f3"
+      }
+    },
+    "bio": {
+      "id": "bio",
+      "source": "Bio — {text}",
+      "params": {
+        "text": {
+          "kind": "user"
+        }
+      },
+      "axes": {},
+      "cells": {
+        "ne-NP": {
+          "": "जीवनी — {text}"
+        }
+      },
+      "enums": {
+        "ne-NP": {}
+      },
+      "hashes": {
+        "ne-NP::": "2aac173c0dbc305f"
+      }
+    },
+    "monthly": {
+      "id": "monthly",
+      "source": "This month: {text}",
+      "params": {
+        "text": {
+          "kind": "user_adapted",
+          "context": "creator monthly stats"
+        }
+      },
+      "axes": {},
+      "cells": {
+        "ne-NP": {
+          "": "यो महिना: {text}"
+        }
+      },
+      "enums": {
+        "ne-NP": {}
+      },
+      "hashes": {
+        "ne-NP::": "1bbc4585556bb9f5"
       }
     }
   }

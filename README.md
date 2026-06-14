@@ -58,7 +58,8 @@ export const fee = new StringLocale("{creator} charges {amount} per post", {
 });
 ```
 
-**3. Set your translator key** — the compiler drafts translations via OpenRouter:
+**3. Set your translator key** — the compiler drafts translations via
+[OpenRouter](https://openrouter.ai/keys):
 
 ```bash
 export OPENROUTER_API_KEY=sk-or-...
@@ -175,10 +176,22 @@ stringlocale compile \
 | `--openrouter-timeout <s>` | `60` | Per-request timeout for the OpenRouter translator |
 | `--openrouter-retries <n>` | `3` | Attempts per request, including the first |
 
-**Translator.** With `OPENROUTER_API_KEY` set (and no `--stub`), the compiler
-calls OpenRouter to draft translations. Otherwise it uses the deterministic
+**Translator & the OpenRouter key.** `compile` drafts translations through
+[OpenRouter](https://openrouter.ai). Pass your key via the `OPENROUTER_API_KEY`
+environment variable — export it for the session/CI, or inline it for one run:
+
+```bash
+export OPENROUTER_API_KEY=sk-or-...
+npx stringlocale compile --sources strings.js --locales es-ES ne-NP ar-SA --out public/i18n
+
+# …or just for this command:
+OPENROUTER_API_KEY=sk-or-... npx stringlocale compile --sources strings.js --locales es-ES --out public/i18n
+```
+
+Tune requests with `--openrouter-timeout` and `--openrouter-retries`. With **no
+key set** (or with `--stub`), the compiler falls back to the deterministic
 `StubTranslator`, which emits placeholders like `ne-NP:You have {count} messages`
-— useful for wiring up the pipeline before any real translations exist.
+— handy for wiring up the pipeline before any real translations exist.
 
 **Incremental.** By default the compiler loads the previous bundle from `--out`
 and reuses any cell whose source text is unchanged, so only new or edited strings
@@ -293,6 +306,47 @@ that walks through all three steps.
 | `Param.relative()` | Relative time ("3 days ago") | `Intl.RelativeTimeFormat` |
 | `Param.user()` | Free user text | Passed through untouched |
 | `Param.userAdapted({ context })` | Free prose needing number/date adaptation | Adapter only |
+
+### Free user text: `user` vs `userAdapted`
+
+Some values aren't yours to translate — a bio someone typed, a comment, a name.
+Two params cover that content, and both stay offline:
+
+* **`Param.user()`** — passed through **exactly as given**, in every locale.
+  Never sent to the translator, never reformatted. The surrounding template is
+  still localized; only the user's text is left alone.
+
+  ```ts
+  export const bio = new StringLocale("Bio — {text}", {
+    id: "bio",
+    params: { text: Param.user() },
+  });
+  // ne-NP: "जीवनी — Travel & food creator based in Pokhara"  (label translated, text verbatim)
+  ```
+
+* **`Param.userAdapted({ context })`** — also user text, but you supply a
+  synchronous **adapter** that may locally adjust it at resolve time — e.g.
+  convert digits to native numerals, or localize an embedded date. With no
+  adapter it behaves exactly like `Param.user()`, so the runtime stays offline.
+
+  The adapter is `(locale, context, text) => string`, set on the store (or the
+  React provider); results are cached per `(locale, context, text)`.
+
+  ```ts
+  import { convertDigits, loadFromUrl } from "stringlocale";
+
+  // localize digits inside free user text: 1200 -> १२०० (ne), ١٢٠٠ (ar)
+  const adapter = (locale, _context, text) => convertDigits(text, locale);
+
+  const store = await loadFromUrl("/i18n", { adapter });
+  // React: <StringLocaleProvider store={store} adapter={adapter} locale="ne-NP">
+
+  export const monthly = new StringLocale("This month: {text}", {
+    id: "monthly",
+    params: { text: Param.userAdapted({ context: "creator monthly stats" }) },
+  });
+  // ne-NP: "यो महिना: Reached १२०० views, ३५ new followers"  (text kept, digits localized)
+  ```
 
 ## Runtime behavior
 

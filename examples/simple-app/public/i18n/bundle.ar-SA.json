@@ -62,16 +62,7 @@
           "kind": "plural"
         }
       },
-      "axes": {
-        "plural": [
-          "zero",
-          "one",
-          "two",
-          "few",
-          "many",
-          "other"
-        ]
-      },
+      "axes": {},
       "cells": {
         "ar-SA": {
           "plural=zero": "لديك {count} رسائل",
@@ -174,6 +165,49 @@
       },
       "hashes": {
         "ar-SA::": "0f10d529366e67e6"
+      }
+    },
+    "bio": {
+      "id": "bio",
+      "source": "Bio — {text}",
+      "params": {
+        "text": {
+          "kind": "user"
+        }
+      },
+      "axes": {},
+      "cells": {
+        "ar-SA": {
+          "": "السيرة الذاتية — {text}"
+        }
+      },
+      "enums": {
+        "ar-SA": {}
+      },
+      "hashes": {
+        "ar-SA::": "85532aa808d966d1"
+      }
+    },
+    "monthly": {
+      "id": "monthly",
+      "source": "This month: {text}",
+      "params": {
+        "text": {
+          "kind": "user_adapted",
+          "context": "creator monthly stats"
+        }
+      },
+      "axes": {},
+      "cells": {
+        "ar-SA": {
+          "": "هذا الشهر: {text}"
+        }
+      },
+      "enums": {
+        "ar-SA": {}
+      },
+      "hashes": {
+        "ar-SA::": "b5c8309a9a0c2b21"
       }
     }
   }

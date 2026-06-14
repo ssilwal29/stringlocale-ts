@@ -41,3 +41,17 @@ export const deadline = new StringLocale("Deliver by {date}", {
   id: "deadline",
   params: { date: Param.date("long") },
 });
+
+// Free user-authored text — passed through verbatim in every locale, never
+// sent to the translator.
+export const bio = new StringLocale("Bio — {text}", {
+  id: "bio",
+  params: { text: Param.user() },
+});
+
+// Also user text, but a runtime adapter may locally adjust it (here: localize
+// the digits inside it). Without an adapter it behaves like Param.user().
+export const monthly = new StringLocale("This month: {text}", {
+  id: "monthly",
+  params: { text: Param.userAdapted({ context: "creator monthly stats" }) },
+});

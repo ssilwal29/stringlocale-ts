@@ -11,12 +11,14 @@ import type { Param, ResolveArgs, Store, StringLocale } from "stringlocale";
 import { StringLocaleProvider, useTranslation } from "stringlocale/react";
 
 import {
+  bio,
   campaignStatus,
   deadline,
   fee,
   followers,
   greeting,
   inbox,
+  monthly,
 } from "./strings";
 
 // en-US is the source locale (no bundle — resolves to the declared text).
@@ -54,6 +56,8 @@ function paramTokens(p: Param): Tok[] {
       t.push([`"${v}"`, "str"]);
     });
     t.push(["]", "punc"]);
+  } else if (p.kind === "user_adapted" && p.context) {
+    t.push(["{ ", "punc"], ["context", "key"], [": ", "punc"], [`"${p.context}"`, "str"], [" }", "punc"]);
   }
   t.push([")", "punc"]);
   return t;
@@ -167,6 +171,16 @@ function CreatorCard() {
         str={deadline}
         args={{ date: "2025-09-30" }}
       />
+      <DemoRow
+        label="Bio"
+        str={bio}
+        args={{ text: "Travel & food creator based in Pokhara" }}
+      />
+      <DemoRow
+        label="This month"
+        str={monthly}
+        args={{ text: "Reached 1200 views, 35 new followers" }}
+      />
     </section>
   );
 }
@@ -248,7 +262,10 @@ export default function App({ store }: { store: Store }) {
         <p className="footnote">
           Numbers, currency, dates &amp; plurals are formatted by the platform{" "}
           <code>Intl</code> APIs — note native digits (१२००, ١٢٠٠) and RTL for
-          Arabic.
+          Arabic. <strong>Bio</strong> is <code>Param.user()</code> (verbatim in
+          every language); <strong>This month</strong> is{" "}
+          <code>Param.userAdapted()</code> — user text whose digits a runtime
+          adapter localizes.
         </p>
       </div>
     </StringLocaleProvider>

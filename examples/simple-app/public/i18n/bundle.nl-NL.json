@@ -62,16 +62,7 @@
           "kind": "plural"
         }
       },
-      "axes": {
-        "plural": [
-          "zero",
-          "one",
-          "two",
-          "few",
-          "many",
-          "other"
-        ]
-      },
+      "axes": {},
       "cells": {
         "nl-NL": {
           "plural=one": "Je hebt {count} bericht",
@@ -166,6 +157,49 @@
       },
       "hashes": {
         "nl-NL::": "cd78e8fa6d53b99f"
+      }
+    },
+    "bio": {
+      "id": "bio",
+      "source": "Bio — {text}",
+      "params": {
+        "text": {
+          "kind": "user"
+        }
+      },
+      "axes": {},
+      "cells": {
+        "nl-NL": {
+          "": "Bio — {text}"
+        }
+      },
+      "enums": {
+        "nl-NL": {}
+      },
+      "hashes": {
+        "nl-NL::": "63dab93765d0b96f"
+      }
+    },
+    "monthly": {
+      "id": "monthly",
+      "source": "This month: {text}",
+      "params": {
+        "text": {
+          "kind": "user_adapted",
+          "context": "creator monthly stats"
+        }
+      },
+      "axes": {},
+      "cells": {
+        "nl-NL": {
+          "": "Deze maand: {text}"
+        }
+      },
+      "enums": {
+        "nl-NL": {}
+      },
+      "hashes": {
+        "nl-NL::": "676991c0e2113879"
       }
     }
   }
