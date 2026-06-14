@@ -211,9 +211,9 @@ export class StringLocale {
   private adapt(ctx: ResolveContext, p: Param, text: string): string {
     const adapter = ctx.adapter ?? ctx.store?.adapter;
     if (!adapter) return text; // stays offline
-    if (ctx.store) {
-      return ctx.store.adaptCached(ctx.locale, p.context, text, adapter);
-    }
+    // Call directly — the adapter owns any caching. (An async-backed adapter,
+    // e.g. live translation, returns the source text until its result lands,
+    // so we must not freeze that first value in a cache here.)
     return adapter(ctx.locale, p.context, text);
   }
 

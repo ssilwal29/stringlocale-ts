@@ -28,7 +28,6 @@ export class Store {
 
   private byLocale = new Map<string, Map<string, Entry>>();
   private loadedLocales = new Set<string>();
-  private adaptCache = new Map<string, string>();
   private manifest?: ManifestData;
   private loader?: LocaleLoader;
   private pending = new Map<string, Promise<void>>();
@@ -115,19 +114,5 @@ export class Store {
 
   entryFor(stringId: string, locale: string): Entry | undefined {
     return this.byLocale.get(locale)?.get(stringId);
-  }
-
-  adaptCached(
-    locale: string,
-    context: string | undefined,
-    text: string,
-    adapter: Adapter,
-  ): string {
-    const key = `${locale} ${context ?? ""} ${text}`;
-    const hit = this.adaptCache.get(key);
-    if (hit !== undefined) return hit;
-    const result = adapter(locale, context, text);
-    this.adaptCache.set(key, result);
-    return result;
   }
 }

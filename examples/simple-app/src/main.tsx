@@ -7,22 +7,15 @@
  */
 import * as React from "react";
 import { createRoot } from "react-dom/client";
-import { convertDigits, loadFromUrl } from "stringlocale";
+import { loadFromUrl } from "stringlocale";
 
 import App from "./App";
 import "./styles.css";
 
-// The adapter for `Param.userAdapted` values. It runs at resolve time on free
-// user text — here it localizes the digits inside it (1200 -> १२०० in Nepali,
-// ١٢٠٠ in Arabic). Omit it and userAdapted behaves like Param.user().
-const adaptDigits = (locale: string, _context: string | undefined, text: string) =>
-  convertDigits(text, locale);
-
+// The Param.userAdapted adapter (live translator + digit fallback) is wired on
+// the provider in App.tsx, so loading just fetches the bundles here.
 async function bootstrap() {
-  const store = await loadFromUrl("/i18n", {
-    preload: ["ne-NP"],
-    adapter: adaptDigits,
-  });
+  const store = await loadFromUrl("/i18n", { preload: ["ne-NP"] });
   const root = createRoot(document.getElementById("root")!);
   root.render(
     <React.StrictMode>

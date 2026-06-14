@@ -301,12 +301,13 @@ fee.resolve({ store, locale: "ne-NP" }, { creator: "Jane Doe", amount: 2500 });
 See [`examples/simple-app`](examples/simple-app) for a runnable Vite + React app
 that walks through all three steps.
 
-## Live (online) translation
+## Live (online) translation via `userAdapted`
 
-Everything above is offline — declared strings compiled ahead of time. For
-**dynamic text you can't compile** (a bio someone is typing, a comment, a
-chat message), there's an opt-in online path that translates at runtime via an
-API. It's deliberately separate from the offline runtime.
+Declared strings are translated ahead of time. **Dynamic text you can't compile**
+(a bio someone is typing, a comment) is handled by the `Param.userAdapted` param
+— its value is run through an **adapter** at resolve time. Give the provider a
+`liveTranslator` and that adapter becomes an online translator: the param is
+translated at runtime through the API.
 
 `createOpenRouterTranslator` returns an `AsyncTranslator`
 (`(text, locale, context?, signal?) => Promise<string>`):
@@ -315,34 +316,47 @@ API. It's deliberately separate from the offline runtime.
 import { createOpenRouterTranslator } from "stringlocale";
 
 const live = createOpenRouterTranslator({ apiKey, model: "google/gemini-2.5-flash" });
-await live("Looking for travel creators", "ne-NP"); // → "यात्रा सर्जकहरू खोज्दै..."
 ```
 
-In React, hand it to the provider and call `useLiveTranslation` — it debounces
-input, caches by `(locale, context, text)`, cancels stale requests, and returns
-the source text until the translation lands:
+Hand it to the provider; any `userAdapted` value then translates online. The
+React layer bridges the async call into the synchronous `resolve()`: it caches
+by `(locale, context, text)`, shows the source text until the translation lands,
+then re-renders. Debounce the input you feed in so you don't translate on every
+keystroke.
 
 ```tsx
+// strings.ts
+export const note = new StringLocale("{text}", {
+  id: "note",
+  params: { text: Param.userAdapted({ context: "user note" }) },
+});
+
+// App.tsx
 <StringLocaleProvider store={store} locale="ne-NP" liveTranslator={live}>
 
 function LiveNote() {
+  const { t } = useTranslation();
   const [input, setInput] = useState("");
-  const { value, loading } = useLiveTranslation(input, { context: "user note" });
+  const debounced = useDebounced(input, 400);     // your own debounce
   return (
     <>
       <textarea value={input} onChange={(e) => setInput(e.target.value)} />
-      <p>{value}{loading && " …"}</p>
+      <p>{t(note, { text: debounced })}</p>        {/* translates live */}
     </>
   );
 }
 ```
+
+A plain sync `adapter` prop still works for offline adaptation (e.g. localizing
+digits); if both are set, `liveTranslator` wins. Without either, `userAdapted`
+passes the text through unchanged.
 
 > **Security.** `apiKey` is visible to whoever runs the code. Use it only on a
 > server or in local dev — never ship a real key in a browser bundle. For
 > production, set `endpoint` to your own backend route that injects the key
 > server-side: `createOpenRouterTranslator({ endpoint: "/api/translate" })`.
 
-The live demo in [`examples/simple-app`](examples/simple-app) wires this up;
+The [`examples/simple-app`](examples/simple-app) "This month" row wires this up;
 set `VITE_OPENROUTER_API_KEY` to enable it.
 
 ## Parameter types
@@ -357,15 +371,14 @@ set `VITE_OPENROUTER_API_KEY` to enable it.
 | `Param.currency("NPR")` | Money | `Intl.NumberFormat` |
 | `Param.relative()` | Relative time ("3 days ago") | `Intl.RelativeTimeFormat` |
 | `Param.user()` | Free user text | Passed through untouched |
-| `Param.userAdapted({ context })` | Free prose needing number/date adaptation | Adapter only |
+| `Param.userAdapted({ context })` | Free user text adapted at runtime | Adapter / live translator |
 
 ### Free user text: `user` vs `userAdapted`
 
-Some values aren't yours to translate — a bio someone typed, a comment, a name.
-Two params cover that content, and both stay offline:
+Some values aren't yours to compile — a bio someone typed, a comment, a name.
 
 * **`Param.user()`** — passed through **exactly as given**, in every locale.
-  Never sent to the translator, never reformatted. The surrounding template is
+  Never sent to a translator, never reformatted. The surrounding template is
   still localized; only the user's text is left alone.
 
   ```ts
@@ -376,28 +389,24 @@ Two params cover that content, and both stay offline:
   // ne-NP: "जीवनी — Travel & food creator based in Pokhara"  (label translated, text verbatim)
   ```
 
-* **`Param.userAdapted({ context })`** — also user text, but you supply a
-  synchronous **adapter** that may locally adjust it at resolve time — e.g.
-  convert digits to native numerals, or localize an embedded date. With no
-  adapter it behaves exactly like `Param.user()`, so the runtime stays offline.
+* **`Param.userAdapted({ context })`** — user text run through an **adapter** at
+  resolve time. The adapter can be:
+  * a **sync** function for offline adjustments (e.g. localizing digits/dates), or
+  * the provider's **`liveTranslator`** for online translation — see
+    [Live (online) translation](#live-online-translation-via-useradapted).
 
-  The adapter is `(locale, context, text) => string`, set on the store (or the
-  React provider); results are cached per `(locale, context, text)`.
+  With neither, it behaves like `Param.user()`.
 
   ```ts
-  import { convertDigits, loadFromUrl } from "stringlocale";
-
-  // localize digits inside free user text: 1200 -> १२०० (ne), ١٢٠٠ (ar)
-  const adapter = (locale, _context, text) => convertDigits(text, locale);
-
-  const store = await loadFromUrl("/i18n", { adapter });
-  // React: <StringLocaleProvider store={store} adapter={adapter} locale="ne-NP">
-
   export const monthly = new StringLocale("This month: {text}", {
     id: "monthly",
     params: { text: Param.userAdapted({ context: "creator monthly stats" }) },
   });
-  // ne-NP: "यो महिना: Reached १२०० views, ३५ new followers"  (text kept, digits localized)
+
+  // offline sync adapter — localize digits: 1200 -> १२०० (ne), ١٢٠٠ (ar)
+  import { convertDigits } from "stringlocale";
+  const adapter = (locale, _context, text) => convertDigits(text, locale);
+  // <StringLocaleProvider store={store} adapter={adapter} locale="ne-NP">
   ```
 
 ## Runtime behavior

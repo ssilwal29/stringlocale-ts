@@ -8,12 +8,8 @@
  */
 import * as React from "react";
 import type { Param, ResolveArgs, Store, StringLocale } from "stringlocale";
-import { createOpenRouterTranslator } from "stringlocale";
-import {
-  StringLocaleProvider,
-  useLiveTranslation,
-  useTranslation,
-} from "stringlocale/react";
+import { convertDigits, createOpenRouterTranslator } from "stringlocale";
+import { StringLocaleProvider, useTranslation } from "stringlocale/react";
 
 import {
   bio,
@@ -34,14 +30,32 @@ const LOCALES = [
   { tag: "ar-SA", flag: "🇸🇦", name: "العربية" },
 ] as const;
 
-// Online translator for the live-typing demo. The key comes from a Vite env var
-// (set VITE_OPENROUTER_API_KEY in .env.local). This is dev-only — never ship a
-// real key in a browser bundle; in production proxy through your own backend.
+// Param.userAdapted is driven by an adapter on the provider:
+//   • liveTranslator (online) — translates the text via OpenRouter, if a key is
+//     set (VITE_OPENROUTER_API_KEY in .env.local). Dev-only: never ship a real
+//     key in a browser bundle; in production proxy through your own backend.
+//   • adapter (offline, sync) — the fallback when there's no key; here it just
+//     localizes the digits inside the text.
 const apiKey = (import.meta as { env?: Record<string, string> }).env
   ?.VITE_OPENROUTER_API_KEY;
 const liveTranslator = apiKey
   ? createOpenRouterTranslator({ apiKey, referer: "http://localhost:5173" })
   : undefined;
+const digitsAdapter = (
+  locale: string,
+  _context: string | undefined,
+  text: string,
+) => convertDigits(text, locale);
+
+// Debounce a fast-changing value so we don't translate on every keystroke.
+function useDebounced<T>(value: T, ms: number): T {
+  const [debounced, setDebounced] = React.useState(value);
+  React.useEffect(() => {
+    const id = setTimeout(() => setDebounced(value), ms);
+    return () => clearTimeout(id);
+  }, [value, ms]);
+  return debounced;
+}
 
 const USER = "Jane Doe";
 
@@ -163,6 +177,35 @@ function DemoRow({
   );
 }
 
+// Param.userAdapted in action: type below and the text is translated live via
+// the provider's liveTranslator (OpenRouter). With no key it falls back to the
+// sync adapter, which just localizes the digits. Debounced so we don't fire a
+// request on every keystroke; shows the source text until the translation lands.
+function LiveAdaptedRow() {
+  const { t } = useTranslation();
+  const [input, setInput] = React.useState(
+    "Reached 1200 views and 35 new followers this month.",
+  );
+  const debounced = useDebounced(input, 450);
+  const value = t(monthly, { text: debounced });
+  return (
+    <div className="row">
+      <div className="row-main">
+        <span className="label">This month</span>
+        <span className="value">{value}</span>
+      </div>
+      <textarea
+        className="ua-input"
+        rows={2}
+        value={input}
+        onChange={(e) => setInput(e.target.value)}
+        placeholder="Type something to translate…"
+      />
+      <Decl str={monthly} />
+    </div>
+  );
+}
+
 function CreatorCard() {
   const { t, locale } = useTranslation();
   const rtl = locale.startsWith("ar");
@@ -190,11 +233,7 @@ function CreatorCard() {
         str={bio}
         args={{ text: "Travel & food creator based in Pokhara" }}
       />
-      <DemoRow
-        label="This month"
-        str={monthly}
-        args={{ text: "Reached 1200 views, 35 new followers" }}
-      />
+      <LiveAdaptedRow />
     </section>
   );
 }
@@ -250,58 +289,12 @@ function Explainer() {
   );
 }
 
-// The ONLINE counterpart: dynamic text translated as you type, via OpenRouter.
-// This is not the offline bundle path — it calls the API (debounced + cached).
-function LiveTranslate() {
-  const { locale } = useTranslation();
-  const [input, setInput] = React.useState(
-    "Looking for travel creators in Pokhara for a 3-day campaign.",
-  );
-  const { value, loading, error } = useLiveTranslation(input, {
-    context: "creator marketplace note",
-  });
-  const rtl = locale.startsWith("ar");
-  return (
-    <section className="live">
-      <h3>
-        Live translate <span className="tag">online · OpenRouter</span>
-      </h3>
-      <p className="live-hint">
-        Type below — it's translated into <strong>{locale}</strong> as you go.
-        Unlike everything above, this hits the API at runtime (debounced &amp;
-        cached); switch language to re-translate.
-      </p>
-      <textarea
-        value={input}
-        onChange={(e) => setInput(e.target.value)}
-        rows={2}
-        placeholder="Type something to translate…"
-      />
-      <div className="live-out" dir={rtl ? "rtl" : "ltr"}>
-        {error ? (
-          <span className="live-err">⚠ {error.message}</span>
-        ) : (
-          <>
-            {value}
-            {loading && <span className="live-spin"> · translating…</span>}
-          </>
-        )}
-      </div>
-      {!liveTranslator && (
-        <p className="live-note">
-          Set <code>VITE_OPENROUTER_API_KEY</code> in <code>.env.local</code> to
-          enable live translation (it's a passthrough until then).
-        </p>
-      )}
-    </section>
-  );
-}
-
 export default function App({ store }: { store: Store }) {
   return (
     <StringLocaleProvider
       store={store}
       locale="ne-NP"
+      adapter={digitsAdapter}
       liveTranslator={liveTranslator}
       fallback={<p style={{ color: "#94a3b8" }}>Loading translations…</p>}
     >
@@ -319,16 +312,15 @@ export default function App({ store }: { store: Store }) {
 
         <LocaleSwitcher />
         <CreatorCard />
-        <LiveTranslate />
         <Explainer />
 
         <p className="footnote">
           Numbers, currency, dates &amp; plurals are formatted by the platform{" "}
           <code>Intl</code> APIs — note native digits (१२००, ١٢٠٠) and RTL for
-          Arabic. <strong>Bio</strong> is <code>Param.user()</code> (verbatim in
-          every language); <strong>This month</strong> is{" "}
-          <code>Param.userAdapted()</code> — user text whose digits a runtime
-          adapter localizes.
+          Arabic. <strong>Bio</strong> is <code>Param.user()</code> (verbatim
+          everywhere); <strong>This month</strong> is{" "}
+          <code>Param.userAdapted()</code> — type into it and it's translated
+          live via OpenRouter (or, without a key, its digits are localized).
         </p>
       </div>
     </StringLocaleProvider>

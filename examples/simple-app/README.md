@@ -34,8 +34,10 @@ Open the dev server URL and click the language chips. `English` shows the
 source text straight from the declaration; the others render compiled
 translations. Switching to a not-yet-loaded locale fetches its bundle lazily.
 
-The **Live translate** card is the one online piece: type into it and the text
-is translated at runtime via OpenRouter. It's a passthrough until you add a key:
+The **This month** row is a `Param.userAdapted` value — the one online piece.
+Type into it and the text is translated live via OpenRouter as you go (debounced).
+Without a key it falls back to the offline sync adapter, which just localizes the
+digits. To enable live translation:
 
 ```bash
 cp .env.example .env.local      # then put your key in VITE_OPENROUTER_API_KEY
