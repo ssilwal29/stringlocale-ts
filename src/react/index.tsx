@@ -58,7 +58,12 @@ export interface StringLocaleProviderProps {
 // Bridge an async translator into the synchronous Adapter that resolve() calls
 // for Param.userAdapted: serve from cache, kick off the request on a miss, and
 // re-render when it resolves. Caches are process-wide (translations are stable).
+//
+// liveLastKnown tracks the last translated text per (locale, context) — so when
+// a new text value is in-flight, we keep showing the previous translation rather
+// than reverting to source text.
 const liveCache = new Map<string, string>();
+const liveLastKnown = new Map<string, string>();
 const liveInflight = new Set<string>();
 
 function makeLiveAdapter(
@@ -68,20 +73,27 @@ function makeLiveAdapter(
 ): Adapter {
   return (locale, context, text) => {
     if (!text.trim() || locale === sourceLocale) return text;
-    const key = `${locale} ${context ?? ""} ${text}`;
+    // \x00 as separator prevents collisions between (locale+context, text) fragments
+    const key = `${locale}\x00${context ?? ""}\x00${text}`;
+    const ctxKey = `${locale}\x00${context ?? ""}`;
     const cached = liveCache.get(key);
     if (cached !== undefined) return cached;
     if (!liveInflight.has(key)) {
       liveInflight.add(key);
       Promise.resolve(translator(text, locale, context))
-        .then((out) => liveCache.set(key, out))
-        .catch(() => liveCache.set(key, text)) // fall back to source on failure
+        .then((out) => {
+          liveCache.set(key, out);
+          liveLastKnown.set(ctxKey, out);
+        })
+        .catch(() => liveCache.set(key, text))
         .finally(() => {
           liveInflight.delete(key);
           onResolved();
         });
     }
-    return text; // source text until the translation lands
+    // While the request is in-flight, show the last known translation for this
+    // locale+context rather than reverting to source text.
+    return liveLastKnown.get(ctxKey) ?? text;
   };
 }
 

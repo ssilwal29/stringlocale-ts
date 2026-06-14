@@ -8,7 +8,7 @@
  */
 import * as React from "react";
 import type { Param, ResolveArgs, Store, StringLocale } from "stringlocale";
-import { convertDigits, createOpenRouterTranslator } from "stringlocale";
+import { createOpenRouterTranslator } from "stringlocale";
 import { StringLocaleProvider, useTranslation } from "stringlocale/react";
 
 import {
@@ -30,22 +30,20 @@ const LOCALES = [
   { tag: "ar-SA", flag: "🇸🇦", name: "العربية" },
 ] as const;
 
-// Param.userAdapted is driven by an adapter on the provider:
-//   • liveTranslator (online) — translates the text via OpenRouter, if a key is
-//     set (VITE_OPENROUTER_API_KEY in .env.local). Dev-only: never ship a real
-//     key in a browser bundle; in production proxy through your own backend.
-//   • adapter (offline, sync) — the fallback when there's no key; here it just
-//     localizes the digits inside the text.
+// Param.userAdapted is driven by the liveTranslator on the provider.
+// With VITE_OPENROUTER_API_KEY set: text is translated live via OpenRouter as
+// the user types (debounced). The provider shows the last known translation
+// while a new request is in-flight — no reverting to source text.
+// Without a key: userAdapted behaves like Param.user() — text is passed through
+// verbatim; the surrounding template is still resolved from the compiled bundle.
+//
+// Dev-only key. Vite inlines VITE_* vars into the browser bundle.
+// In production, set endpoint to your own backend proxy instead.
 const apiKey = (import.meta as { env?: Record<string, string> }).env
   ?.VITE_OPENROUTER_API_KEY;
 const liveTranslator = apiKey
   ? createOpenRouterTranslator({ apiKey, referer: "http://localhost:5173" })
   : undefined;
-const digitsAdapter = (
-  locale: string,
-  _context: string | undefined,
-  text: string,
-) => convertDigits(text, locale);
 
 // Debounce a fast-changing value so we don't translate on every keystroke.
 function useDebounced<T>(value: T, ms: number): T {
@@ -186,7 +184,7 @@ function LiveAdaptedRow() {
   const [input, setInput] = React.useState(
     "Reached 1200 views and 35 new followers this month.",
   );
-  const debounced = useDebounced(input, 450);
+  const debounced = useDebounced(input, 300);
   const value = t(monthly, { text: debounced });
   return (
     <div className="row">
@@ -294,7 +292,6 @@ export default function App({ store }: { store: Store }) {
     <StringLocaleProvider
       store={store}
       locale="ne-NP"
-      adapter={digitsAdapter}
       liveTranslator={liveTranslator}
       fallback={<p style={{ color: "#94a3b8" }}>Loading translations…</p>}
     >
@@ -319,8 +316,10 @@ export default function App({ store }: { store: Store }) {
           <code>Intl</code> APIs — note native digits (१२००, ١٢٠٠) and RTL for
           Arabic. <strong>Bio</strong> is <code>Param.user()</code> (verbatim
           everywhere); <strong>This month</strong> is{" "}
-          <code>Param.userAdapted()</code> — type into it and it's translated
-          live via OpenRouter (or, without a key, its digits are localized).
+          <code>Param.userAdapted()</code> — type into it and it translates live
+          via OpenRouter (set <code>VITE_OPENROUTER_API_KEY</code>). Without a
+          key the text is passed through verbatim; the template label is still
+          localized from the compiled bundle.
         </p>
       </div>
     </StringLocaleProvider>
