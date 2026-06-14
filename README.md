@@ -1,5 +1,9 @@
 # stringlocale
 
+[![CI](https://github.com/ssilwal29/stringlocale-ts/actions/workflows/ci.yml/badge.svg)](https://github.com/ssilwal29/stringlocale-ts/actions/workflows/ci.yml)
+[![npm](https://img.shields.io/npm/v/stringlocale.svg)](https://www.npmjs.com/package/stringlocale)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
 Typed, build-time localization. You declare each user-facing string once as a
 typed object; a CLI drafts the translations into static JSON bundles at build
 time; your app resolves them offline with native `Intl` formatting. No
