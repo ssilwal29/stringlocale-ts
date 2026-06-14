@@ -48,6 +48,9 @@ export {
 
 export { loadCombined, loadManifest, loadFromUrl } from "./load";
 
+export { createOpenRouterTranslator } from "./live";
+export type { AsyncTranslator, OpenRouterLiveOptions } from "./live";
+
 export { cellKey, SOURCE, BUNDLE_VERSION } from "./bundle";
 
 export { asLocaleTag, isLocaleTag } from "./locale-tag";

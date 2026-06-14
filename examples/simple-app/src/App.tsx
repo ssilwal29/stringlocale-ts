@@ -8,7 +8,12 @@
  */
 import * as React from "react";
 import type { Param, ResolveArgs, Store, StringLocale } from "stringlocale";
-import { StringLocaleProvider, useTranslation } from "stringlocale/react";
+import { createOpenRouterTranslator } from "stringlocale";
+import {
+  StringLocaleProvider,
+  useLiveTranslation,
+  useTranslation,
+} from "stringlocale/react";
 
 import {
   bio,
@@ -28,6 +33,15 @@ const LOCALES = [
   { tag: "nl-NL", flag: "🇳🇱", name: "Nederlands" },
   { tag: "ar-SA", flag: "🇸🇦", name: "العربية" },
 ] as const;
+
+// Online translator for the live-typing demo. The key comes from a Vite env var
+// (set VITE_OPENROUTER_API_KEY in .env.local). This is dev-only — never ship a
+// real key in a browser bundle; in production proxy through your own backend.
+const apiKey = (import.meta as { env?: Record<string, string> }).env
+  ?.VITE_OPENROUTER_API_KEY;
+const liveTranslator = apiKey
+  ? createOpenRouterTranslator({ apiKey, referer: "http://localhost:5173" })
+  : undefined;
 
 const USER = "Jane Doe";
 
@@ -236,11 +250,59 @@ function Explainer() {
   );
 }
 
+// The ONLINE counterpart: dynamic text translated as you type, via OpenRouter.
+// This is not the offline bundle path — it calls the API (debounced + cached).
+function LiveTranslate() {
+  const { locale } = useTranslation();
+  const [input, setInput] = React.useState(
+    "Looking for travel creators in Pokhara for a 3-day campaign.",
+  );
+  const { value, loading, error } = useLiveTranslation(input, {
+    context: "creator marketplace note",
+  });
+  const rtl = locale.startsWith("ar");
+  return (
+    <section className="live">
+      <h3>
+        Live translate <span className="tag">online · OpenRouter</span>
+      </h3>
+      <p className="live-hint">
+        Type below — it's translated into <strong>{locale}</strong> as you go.
+        Unlike everything above, this hits the API at runtime (debounced &amp;
+        cached); switch language to re-translate.
+      </p>
+      <textarea
+        value={input}
+        onChange={(e) => setInput(e.target.value)}
+        rows={2}
+        placeholder="Type something to translate…"
+      />
+      <div className="live-out" dir={rtl ? "rtl" : "ltr"}>
+        {error ? (
+          <span className="live-err">⚠ {error.message}</span>
+        ) : (
+          <>
+            {value}
+            {loading && <span className="live-spin"> · translating…</span>}
+          </>
+        )}
+      </div>
+      {!liveTranslator && (
+        <p className="live-note">
+          Set <code>VITE_OPENROUTER_API_KEY</code> in <code>.env.local</code> to
+          enable live translation (it's a passthrough until then).
+        </p>
+      )}
+    </section>
+  );
+}
+
 export default function App({ store }: { store: Store }) {
   return (
     <StringLocaleProvider
       store={store}
       locale="ne-NP"
+      liveTranslator={liveTranslator}
       fallback={<p style={{ color: "#94a3b8" }}>Loading translations…</p>}
     >
       <div className="page">
@@ -257,6 +319,7 @@ export default function App({ store }: { store: Store }) {
 
         <LocaleSwitcher />
         <CreatorCard />
+        <LiveTranslate />
         <Explainer />
 
         <p className="footnote">

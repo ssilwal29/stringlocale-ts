@@ -301,6 +301,50 @@ fee.resolve({ store, locale: "ne-NP" }, { creator: "Jane Doe", amount: 2500 });
 See [`examples/simple-app`](examples/simple-app) for a runnable Vite + React app
 that walks through all three steps.
 
+## Live (online) translation
+
+Everything above is offline — declared strings compiled ahead of time. For
+**dynamic text you can't compile** (a bio someone is typing, a comment, a
+chat message), there's an opt-in online path that translates at runtime via an
+API. It's deliberately separate from the offline runtime.
+
+`createOpenRouterTranslator` returns an `AsyncTranslator`
+(`(text, locale, context?, signal?) => Promise<string>`):
+
+```ts
+import { createOpenRouterTranslator } from "stringlocale";
+
+const live = createOpenRouterTranslator({ apiKey, model: "google/gemini-2.5-flash" });
+await live("Looking for travel creators", "ne-NP"); // → "यात्रा सर्जकहरू खोज्दै..."
+```
+
+In React, hand it to the provider and call `useLiveTranslation` — it debounces
+input, caches by `(locale, context, text)`, cancels stale requests, and returns
+the source text until the translation lands:
+
+```tsx
+<StringLocaleProvider store={store} locale="ne-NP" liveTranslator={live}>
+
+function LiveNote() {
+  const [input, setInput] = useState("");
+  const { value, loading } = useLiveTranslation(input, { context: "user note" });
+  return (
+    <>
+      <textarea value={input} onChange={(e) => setInput(e.target.value)} />
+      <p>{value}{loading && " …"}</p>
+    </>
+  );
+}
+```
+
+> **Security.** `apiKey` is visible to whoever runs the code. Use it only on a
+> server or in local dev — never ship a real key in a browser bundle. For
+> production, set `endpoint` to your own backend route that injects the key
+> server-side: `createOpenRouterTranslator({ endpoint: "/api/translate" })`.
+
+The live demo in [`examples/simple-app`](examples/simple-app) wires this up;
+set `VITE_OPENROUTER_API_KEY` to enable it.
+
 ## Parameter types
 
 | Helper | Use for | Runtime behavior |

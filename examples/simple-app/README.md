@@ -34,6 +34,17 @@ Open the dev server URL and click the language chips. `English` shows the
 source text straight from the declaration; the others render compiled
 translations. Switching to a not-yet-loaded locale fetches its bundle lazily.
 
+The **Live translate** card is the one online piece: type into it and the text
+is translated at runtime via OpenRouter. It's a passthrough until you add a key:
+
+```bash
+cp .env.example .env.local      # then put your key in VITE_OPENROUTER_API_KEY
+```
+
+> **Dev-only key.** Vite inlines `VITE_*` vars into the browser bundle, so this
+> exposes the key — fine for local dev, never for production. In a real app,
+> point `createOpenRouterTranslator({ endpoint })` at your own backend proxy.
+
 > **Local package.** `stringlocale` isn't on npm yet, so this example depends on
 > the repo via `file:../..` and [vite.config.ts](vite.config.ts) aliases
 > `stringlocale` to `../../src`, so dev always runs against the latest source
