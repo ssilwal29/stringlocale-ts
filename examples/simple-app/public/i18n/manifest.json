@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "source_locale": "en-US",
+  "locales": [
+    "ne-NP",
+    "nl-NL",
+    "ar-SA"
+  ],
+  "files": {
+    "ne-NP": "bundle.ne-NP.json",
+    "nl-NL": "bundle.nl-NL.json",
+    "ar-SA": "bundle.ar-SA.json"
+  }
+}

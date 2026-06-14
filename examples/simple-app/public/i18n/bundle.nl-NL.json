@@ -1,0 +1,172 @@
+{
+  "version": 1,
+  "source_locale": "en-US",
+  "locales": [
+    "nl-NL"
+  ],
+  "entries": {
+    "greeting": {
+      "id": "greeting",
+      "source": "{name}, your account is ready",
+      "params": {
+        "name": {
+          "kind": "literal"
+        }
+      },
+      "axes": {
+        "gender": [
+          "male",
+          "female"
+        ]
+      },
+      "cells": {
+        "nl-NL": {
+          "gender=male": "{name}, uw account is klaar",
+          "gender=female": "{name}, je account is klaar"
+        }
+      },
+      "enums": {
+        "nl-NL": {}
+      },
+      "hashes": {
+        "nl-NL::gender=male": "9a3e5aa8d3595acd",
+        "nl-NL::gender=female": "8de3e8a66b397a85"
+      }
+    },
+    "followers": {
+      "id": "followers",
+      "source": "{n} followers",
+      "params": {
+        "n": {
+          "kind": "number"
+        }
+      },
+      "axes": {},
+      "cells": {
+        "nl-NL": {
+          "": "{n} volgers"
+        }
+      },
+      "enums": {
+        "nl-NL": {}
+      },
+      "hashes": {
+        "nl-NL::": "2f46a33d274644e9"
+      }
+    },
+    "inbox": {
+      "id": "inbox",
+      "source": "You have {count} messages",
+      "params": {
+        "count": {
+          "kind": "plural"
+        }
+      },
+      "axes": {
+        "plural": [
+          "zero",
+          "one",
+          "two",
+          "few",
+          "many",
+          "other"
+        ]
+      },
+      "cells": {
+        "nl-NL": {
+          "plural=one": "Je hebt {count} bericht",
+          "plural=other": "Je hebt {count} berichten"
+        }
+      },
+      "enums": {
+        "nl-NL": {}
+      },
+      "hashes": {
+        "nl-NL::plural=one": "a48bb927c9fab0d7",
+        "nl-NL::plural=other": "36ac97c6c266b5bd"
+      }
+    },
+    "fee": {
+      "id": "fee",
+      "source": "{creator} charges {amount} per post",
+      "params": {
+        "creator": {
+          "kind": "literal"
+        },
+        "amount": {
+          "kind": "currency",
+          "currency_code": "NPR"
+        }
+      },
+      "axes": {},
+      "cells": {
+        "nl-NL": {
+          "": "{creator} berekent {amount} per post"
+        }
+      },
+      "enums": {
+        "nl-NL": {}
+      },
+      "hashes": {
+        "nl-NL::": "27edd109495402fe"
+      }
+    },
+    "campaign_status": {
+      "id": "campaign_status",
+      "source": "Campaign is {status}",
+      "params": {
+        "status": {
+          "kind": "translatable",
+          "values": [
+            "approved",
+            "pending",
+            "rejected"
+          ],
+          "inline": false,
+          "context": "campaign review status"
+        }
+      },
+      "axes": {},
+      "cells": {
+        "nl-NL": {
+          "": "Campagne is {status}"
+        }
+      },
+      "enums": {
+        "nl-NL": {
+          "status": {
+            "approved": "goedgekeurd",
+            "pending": "in behandeling",
+            "rejected": "afgewezen"
+          }
+        }
+      },
+      "hashes": {
+        "nl-NL::": "af26e6b5c3ec4259",
+        "nl-NL::enum::status": "cd110bf069b33317"
+      }
+    },
+    "deadline": {
+      "id": "deadline",
+      "source": "Deliver by {date}",
+      "params": {
+        "date": {
+          "kind": "date",
+          "fmt": "long"
+        }
+      },
+      "axes": {},
+      "cells": {
+        "nl-NL": {
+          "": "Bezorgen op {date}"
+        }
+      },
+      "enums": {
+        "nl-NL": {}
+      },
+      "hashes": {
+        "nl-NL::": "cd78e8fa6d53b99f"
+      }
+    }
+  }
+}

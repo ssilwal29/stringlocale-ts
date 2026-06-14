@@ -1,0 +1,460 @@
+{
+  "version": 1,
+  "source_locale": "en-US",
+  "locales": [
+    "ne-NP",
+    "ar-SA",
+    "fa-IR"
+  ],
+  "entries": {
+    "joined": {
+      "id": "joined",
+      "source": "{creator} joined the platform",
+      "params": {
+        "creator": {
+          "kind": "literal"
+        }
+      },
+      "axes": {},
+      "cells": {
+        "ne-NP": {
+          "": "ne-NP:{creator} joined the platform"
+        },
+        "ar-SA": {
+          "": "ar:{creator} joined the platform"
+        },
+        "fa-IR": {
+          "": "fa:{creator} joined the platform"
+        }
+      },
+      "enums": {},
+      "hashes": {
+        "ne-NP::": "6ac0591f6422c6ca",
+        "ar-SA::": "6ac0591f6422c6ca",
+        "fa-IR::": "6ac0591f6422c6ca"
+      }
+    },
+    "followers": {
+      "id": "followers",
+      "source": "{n} followers",
+      "params": {
+        "n": {
+          "kind": "number"
+        }
+      },
+      "axes": {},
+      "cells": {
+        "ne-NP": {
+          "": "ne-NP:{n} followers"
+        },
+        "ar-SA": {
+          "": "ar:{n} followers"
+        },
+        "fa-IR": {
+          "": "fa:{n} followers"
+        }
+      },
+      "enums": {},
+      "hashes": {
+        "ne-NP::": "f92d507d93994f73",
+        "ar-SA::": "f92d507d93994f73",
+        "fa-IR::": "f92d507d93994f73"
+      }
+    },
+    "inbox": {
+      "id": "inbox",
+      "source": "You have {count} messages",
+      "params": {
+        "count": {
+          "kind": "plural"
+        }
+      },
+      "axes": {
+        "plural": [
+          "one",
+          "other"
+        ]
+      },
+      "cells": {
+        "ne-NP": {
+          "plural=one": "ne-NP:You have {count} messages \u00abplural=one\u00bb",
+          "plural=other": "ne-NP:You have {count} messages \u00abplural=other\u00bb"
+        },
+        "ar-SA": {
+          "plural=zero": "ar:You have {count} messages \u00abplural=zero\u00bb",
+          "plural=one": "ar:You have {count} messages \u00abplural=one\u00bb",
+          "plural=two": "ar:You have {count} messages \u00abplural=two\u00bb",
+          "plural=few": "ar:You have {count} messages \u00abplural=few\u00bb",
+          "plural=many": "ar:You have {count} messages \u00abplural=many\u00bb",
+          "plural=other": "ar:You have {count} messages \u00abplural=other\u00bb"
+        },
+        "fa-IR": {
+          "plural=one": "fa:You have {count} messages \u00abplural=one\u00bb",
+          "plural=other": "fa:You have {count} messages \u00abplural=other\u00bb"
+        }
+      },
+      "enums": {},
+      "hashes": {
+        "ne-NP::plural=one": "1efc6eacdfc14d58",
+        "ne-NP::plural=other": "d6196514d770dfdb",
+        "ar-SA::plural=zero": "c230a13425784c51",
+        "ar-SA::plural=one": "8f0c13861aa951f1",
+        "ar-SA::plural=two": "234413c10a49be5b",
+        "ar-SA::plural=few": "54cfa76ad305a9d4",
+        "ar-SA::plural=many": "baf5a3fd2e70fcb8",
+        "ar-SA::plural=other": "a94e5651d2a5c3f7",
+        "fa-IR::plural=one": "1efc6eacdfc14d58",
+        "fa-IR::plural=other": "d6196514d770dfdb"
+      }
+    },
+    "campaign_status": {
+      "id": "campaign_status",
+      "source": "Campaign is {status}",
+      "params": {
+        "status": {
+          "kind": "translatable",
+          "values": [
+            "approved",
+            "pending",
+            "rejected"
+          ],
+          "inline": false,
+          "context": "campaign review status"
+        }
+      },
+      "axes": {},
+      "cells": {
+        "ne-NP": {
+          "": "ne-NP:Campaign is {status}"
+        },
+        "ar-SA": {
+          "": "ar:Campaign is {status}"
+        },
+        "fa-IR": {
+          "": "fa:Campaign is {status}"
+        }
+      },
+      "enums": {
+        "ne-NP": {
+          "status": {
+            "approved": "ne-NP:approved",
+            "pending": "ne-NP:pending",
+            "rejected": "ne-NP:rejected"
+          }
+        },
+        "ar-SA": {
+          "status": {
+            "approved": "ar:approved",
+            "pending": "ar:pending",
+            "rejected": "ar:rejected"
+          }
+        },
+        "fa-IR": {
+          "status": {
+            "approved": "fa:approved",
+            "pending": "fa:pending",
+            "rejected": "fa:rejected"
+          }
+        }
+      },
+      "hashes": {
+        "ne-NP::": "382a3502b2c05f31",
+        "ne-NP::enum::status": "e341a61b8b57bf13",
+        "ar-SA::": "382a3502b2c05f31",
+        "ar-SA::enum::status": "e341a61b8b57bf13",
+        "fa-IR::": "382a3502b2c05f31",
+        "fa-IR::enum::status": "e341a61b8b57bf13"
+      }
+    },
+    "deadline": {
+      "id": "deadline",
+      "source": "Deliver by {date}",
+      "params": {
+        "date": {
+          "kind": "date",
+          "fmt": "long"
+        }
+      },
+      "axes": {},
+      "cells": {
+        "ne-NP": {
+          "": "ne-NP:Deliver by {date}"
+        },
+        "ar-SA": {
+          "": "ar:Deliver by {date}"
+        },
+        "fa-IR": {
+          "": "fa:Deliver by {date}"
+        }
+      },
+      "enums": {},
+      "hashes": {
+        "ne-NP::": "309d99b04b796968",
+        "ar-SA::": "309d99b04b796968",
+        "fa-IR::": "309d99b04b796968"
+      }
+    },
+    "fee": {
+      "id": "fee",
+      "source": "{creator} charges {amount} per post",
+      "params": {
+        "creator": {
+          "kind": "literal"
+        },
+        "amount": {
+          "kind": "currency",
+          "currency_code": "NPR"
+        }
+      },
+      "axes": {},
+      "cells": {
+        "ne-NP": {
+          "": "ne-NP:{creator} charges {amount} per post"
+        },
+        "ar-SA": {
+          "": "ar:{creator} charges {amount} per post"
+        },
+        "fa-IR": {
+          "": "fa:{creator} charges {amount} per post"
+        }
+      },
+      "enums": {},
+      "hashes": {
+        "ne-NP::": "838a6efbd619ac8b",
+        "ar-SA::": "838a6efbd619ac8b",
+        "fa-IR::": "838a6efbd619ac8b"
+      }
+    },
+    "posted": {
+      "id": "posted",
+      "source": "Posted {when}",
+      "params": {
+        "when": {
+          "kind": "relative"
+        }
+      },
+      "axes": {},
+      "cells": {
+        "ne-NP": {
+          "": "ne-NP:Posted {when}"
+        },
+        "ar-SA": {
+          "": "ar:Posted {when}"
+        },
+        "fa-IR": {
+          "": "fa:Posted {when}"
+        }
+      },
+      "enums": {},
+      "hashes": {
+        "ne-NP::": "0d8c22dcf499bc8c",
+        "ar-SA::": "0d8c22dcf499bc8c",
+        "fa-IR::": "0d8c22dcf499bc8c"
+      }
+    },
+    "brief": {
+      "id": "brief",
+      "source": "Brief: {text}",
+      "params": {
+        "text": {
+          "kind": "user"
+        }
+      },
+      "axes": {},
+      "cells": {
+        "ne-NP": {
+          "": "ne-NP:Brief: {text}"
+        },
+        "ar-SA": {
+          "": "ar:Brief: {text}"
+        },
+        "fa-IR": {
+          "": "fa:Brief: {text}"
+        }
+      },
+      "enums": {},
+      "hashes": {
+        "ne-NP::": "5c844ac09309f6f7",
+        "ar-SA::": "5c844ac09309f6f7",
+        "fa-IR::": "5c844ac09309f6f7"
+      }
+    },
+    "summary": {
+      "id": "summary",
+      "source": "Summary: {text}",
+      "params": {
+        "text": {
+          "kind": "user_adapted",
+          "context": "campaign summary"
+        }
+      },
+      "axes": {},
+      "cells": {
+        "ne-NP": {
+          "": "ne-NP:Summary: {text}"
+        },
+        "ar-SA": {
+          "": "ar:Summary: {text}"
+        },
+        "fa-IR": {
+          "": "fa:Summary: {text}"
+        }
+      },
+      "enums": {},
+      "hashes": {
+        "ne-NP::": "66314d75a76b869b",
+        "ar-SA::": "66314d75a76b869b",
+        "fa-IR::": "66314d75a76b869b"
+      }
+    },
+    "greeting": {
+      "id": "greeting",
+      "source": "{name}, your account is ready",
+      "params": {
+        "name": {
+          "kind": "literal"
+        }
+      },
+      "axes": {
+        "gender": [
+          "male",
+          "female"
+        ]
+      },
+      "cells": {
+        "ne-NP": {
+          "gender=male": "ne-NP:{name}, your account is ready \u00abgender=male\u00bb",
+          "gender=female": "ne-NP:{name}, your account is ready \u00abgender=female\u00bb"
+        },
+        "ar-SA": {
+          "gender=male": "ar:{name}, your account is ready \u00abgender=male\u00bb",
+          "gender=female": "ar:{name}, your account is ready \u00abgender=female\u00bb"
+        },
+        "fa-IR": {
+          "gender=male": "fa:{name}, your account is ready \u00abgender=male\u00bb",
+          "gender=female": "fa:{name}, your account is ready \u00abgender=female\u00bb"
+        }
+      },
+      "enums": {},
+      "hashes": {
+        "ne-NP::gender=male": "6a3e2150d8501926",
+        "ne-NP::gender=female": "ec743205af7f3b30",
+        "ar-SA::gender=male": "6a3e2150d8501926",
+        "ar-SA::gender=female": "ec743205af7f3b30",
+        "fa-IR::gender=male": "6a3e2150d8501926",
+        "fa-IR::gender=female": "ec743205af7f3b30"
+      }
+    },
+    "listing": {
+      "id": "listing",
+      "source": "{creator} charges {amount} for {count} posts, status {status}, by {date}",
+      "params": {
+        "creator": {
+          "kind": "literal"
+        },
+        "amount": {
+          "kind": "currency",
+          "currency_code": "NPR"
+        },
+        "count": {
+          "kind": "plural"
+        },
+        "status": {
+          "kind": "translatable",
+          "values": [
+            "approved",
+            "pending"
+          ],
+          "inline": false
+        },
+        "date": {
+          "kind": "date",
+          "fmt": "medium"
+        }
+      },
+      "axes": {
+        "gender": [
+          "male",
+          "female"
+        ],
+        "plural": [
+          "one",
+          "other"
+        ]
+      },
+      "cells": {
+        "ne-NP": {
+          "gender=male|plural=one": "ne-NP:{creator} charges {amount} for {count} posts, status {status}, by {date} \u00abgender=male, plural=one\u00bb",
+          "gender=male|plural=other": "ne-NP:{creator} charges {amount} for {count} posts, status {status}, by {date} \u00abgender=male, plural=other\u00bb",
+          "gender=female|plural=one": "ne-NP:{creator} charges {amount} for {count} posts, status {status}, by {date} \u00abgender=female, plural=one\u00bb",
+          "gender=female|plural=other": "ne-NP:{creator} charges {amount} for {count} posts, status {status}, by {date} \u00abgender=female, plural=other\u00bb"
+        },
+        "ar-SA": {
+          "gender=male|plural=zero": "ar:{creator} charges {amount} for {count} posts, status {status}, by {date} \u00abgender=male, plural=zero\u00bb",
+          "gender=male|plural=one": "ar:{creator} charges {amount} for {count} posts, status {status}, by {date} \u00abgender=male, plural=one\u00bb",
+          "gender=male|plural=two": "ar:{creator} charges {amount} for {count} posts, status {status}, by {date} \u00abgender=male, plural=two\u00bb",
+          "gender=male|plural=few": "ar:{creator} charges {amount} for {count} posts, status {status}, by {date} \u00abgender=male, plural=few\u00bb",
+          "gender=male|plural=many": "ar:{creator} charges {amount} for {count} posts, status {status}, by {date} \u00abgender=male, plural=many\u00bb",
+          "gender=male|plural=other": "ar:{creator} charges {amount} for {count} posts, status {status}, by {date} \u00abgender=male, plural=other\u00bb",
+          "gender=female|plural=zero": "ar:{creator} charges {amount} for {count} posts, status {status}, by {date} \u00abgender=female, plural=zero\u00bb",
+          "gender=female|plural=one": "ar:{creator} charges {amount} for {count} posts, status {status}, by {date} \u00abgender=female, plural=one\u00bb",
+          "gender=female|plural=two": "ar:{creator} charges {amount} for {count} posts, status {status}, by {date} \u00abgender=female, plural=two\u00bb",
+          "gender=female|plural=few": "ar:{creator} charges {amount} for {count} posts, status {status}, by {date} \u00abgender=female, plural=few\u00bb",
+          "gender=female|plural=many": "ar:{creator} charges {amount} for {count} posts, status {status}, by {date} \u00abgender=female, plural=many\u00bb",
+          "gender=female|plural=other": "ar:{creator} charges {amount} for {count} posts, status {status}, by {date} \u00abgender=female, plural=other\u00bb"
+        },
+        "fa-IR": {
+          "gender=male|plural=one": "fa:{creator} charges {amount} for {count} posts, status {status}, by {date} \u00abgender=male, plural=one\u00bb",
+          "gender=male|plural=other": "fa:{creator} charges {amount} for {count} posts, status {status}, by {date} \u00abgender=male, plural=other\u00bb",
+          "gender=female|plural=one": "fa:{creator} charges {amount} for {count} posts, status {status}, by {date} \u00abgender=female, plural=one\u00bb",
+          "gender=female|plural=other": "fa:{creator} charges {amount} for {count} posts, status {status}, by {date} \u00abgender=female, plural=other\u00bb"
+        }
+      },
+      "enums": {
+        "ne-NP": {
+          "status": {
+            "approved": "ne-NP:approved",
+            "pending": "ne-NP:pending"
+          }
+        },
+        "ar-SA": {
+          "status": {
+            "approved": "ar:approved",
+            "pending": "ar:pending"
+          }
+        },
+        "fa-IR": {
+          "status": {
+            "approved": "fa:approved",
+            "pending": "fa:pending"
+          }
+        }
+      },
+      "hashes": {
+        "ne-NP::gender=male|plural=one": "d760da9b8f66220e",
+        "ne-NP::gender=male|plural=other": "713a3ced893fa8c4",
+        "ne-NP::gender=female|plural=one": "2c95b89dde2f08af",
+        "ne-NP::gender=female|plural=other": "18238d7b9ad90b82",
+        "ne-NP::enum::status": "d094a1ee0874249d",
+        "ar-SA::gender=male|plural=zero": "091630cc46a7b186",
+        "ar-SA::gender=male|plural=one": "4dc0ed4bbfd0b07e",
+        "ar-SA::gender=male|plural=two": "ecd8309a3d76628c",
+        "ar-SA::gender=male|plural=few": "77d54a85f7b671e1",
+        "ar-SA::gender=male|plural=many": "5b105c56f9f4a82c",
+        "ar-SA::gender=male|plural=other": "d92f6e59e1281874",
+        "ar-SA::gender=female|plural=zero": "b35e5390b77594a7",
+        "ar-SA::gender=female|plural=one": "e300386f707c2e8a",
+        "ar-SA::gender=female|plural=two": "36834766c7a6e9cb",
+        "ar-SA::gender=female|plural=few": "d0406736cbdc8700",
+        "ar-SA::gender=female|plural=many": "e6be7e0a574d2566",
+        "ar-SA::gender=female|plural=other": "ee18d99972102a06",
+        "ar-SA::enum::status": "d094a1ee0874249d",
+        "fa-IR::gender=male|plural=one": "d760da9b8f66220e",
+        "fa-IR::gender=male|plural=other": "713a3ced893fa8c4",
+        "fa-IR::gender=female|plural=one": "2c95b89dde2f08af",
+        "fa-IR::gender=female|plural=other": "18238d7b9ad90b82",
+        "fa-IR::enum::status": "d094a1ee0874249d"
+      }
+    }
+  }
+}

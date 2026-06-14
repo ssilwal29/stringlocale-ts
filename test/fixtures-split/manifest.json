@@ -1,0 +1,15 @@
+{
+  "source_locale": "en-US",
+  "locales": [
+    "ne-NP",
+    "ar-SA",
+    "fa-IR",
+    "ar"
+  ],
+  "files": {
+    "ne-NP": "bundle.ne-NP.json",
+    "ar-SA": "bundle.ar-SA.json",
+    "fa-IR": "bundle.fa-IR.json",
+    "ar": "bundle.ar.json"
+  }
+}

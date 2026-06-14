@@ -1,0 +1,296 @@
+{
+  "version": 1,
+  "source_locale": "en-US",
+  "locales": [
+    "fa-IR"
+  ],
+  "entries": {
+    "joined": {
+      "id": "joined",
+      "source": "{creator} joined the platform",
+      "params": {
+        "creator": {
+          "kind": "literal"
+        }
+      },
+      "axes": {},
+      "cells": {
+        "fa-IR": {
+          "": "fa:{creator} joined the platform"
+        }
+      },
+      "enums": {},
+      "hashes": {
+        "fa-IR::": "6ac0591f6422c6ca"
+      }
+    },
+    "followers": {
+      "id": "followers",
+      "source": "{n} followers",
+      "params": {
+        "n": {
+          "kind": "number"
+        }
+      },
+      "axes": {},
+      "cells": {
+        "fa-IR": {
+          "": "fa:{n} followers"
+        }
+      },
+      "enums": {},
+      "hashes": {
+        "fa-IR::": "f92d507d93994f73"
+      }
+    },
+    "inbox": {
+      "id": "inbox",
+      "source": "You have {count} messages",
+      "params": {
+        "count": {
+          "kind": "plural"
+        }
+      },
+      "axes": {
+        "plural": [
+          "one",
+          "other"
+        ]
+      },
+      "cells": {
+        "fa-IR": {
+          "plural=one": "fa:You have {count} messages \u00abplural=one\u00bb",
+          "plural=other": "fa:You have {count} messages \u00abplural=other\u00bb"
+        }
+      },
+      "enums": {},
+      "hashes": {
+        "fa-IR::plural=one": "1efc6eacdfc14d58",
+        "fa-IR::plural=other": "d6196514d770dfdb"
+      }
+    },
+    "campaign_status": {
+      "id": "campaign_status",
+      "source": "Campaign is {status}",
+      "params": {
+        "status": {
+          "kind": "translatable",
+          "values": [
+            "approved",
+            "pending",
+            "rejected"
+          ],
+          "inline": false,
+          "context": "campaign review status"
+        }
+      },
+      "axes": {},
+      "cells": {
+        "fa-IR": {
+          "": "fa:Campaign is {status}"
+        }
+      },
+      "enums": {
+        "fa-IR": {
+          "status": {
+            "approved": "fa:approved",
+            "pending": "fa:pending",
+            "rejected": "fa:rejected"
+          }
+        }
+      },
+      "hashes": {
+        "fa-IR::": "382a3502b2c05f31",
+        "fa-IR::enum::status": "e341a61b8b57bf13"
+      }
+    },
+    "deadline": {
+      "id": "deadline",
+      "source": "Deliver by {date}",
+      "params": {
+        "date": {
+          "kind": "date",
+          "fmt": "long"
+        }
+      },
+      "axes": {},
+      "cells": {
+        "fa-IR": {
+          "": "fa:Deliver by {date}"
+        }
+      },
+      "enums": {},
+      "hashes": {
+        "fa-IR::": "309d99b04b796968"
+      }
+    },
+    "fee": {
+      "id": "fee",
+      "source": "{creator} charges {amount} per post",
+      "params": {
+        "creator": {
+          "kind": "literal"
+        },
+        "amount": {
+          "kind": "currency",
+          "currency_code": "NPR"
+        }
+      },
+      "axes": {},
+      "cells": {
+        "fa-IR": {
+          "": "fa:{creator} charges {amount} per post"
+        }
+      },
+      "enums": {},
+      "hashes": {
+        "fa-IR::": "838a6efbd619ac8b"
+      }
+    },
+    "posted": {
+      "id": "posted",
+      "source": "Posted {when}",
+      "params": {
+        "when": {
+          "kind": "relative"
+        }
+      },
+      "axes": {},
+      "cells": {
+        "fa-IR": {
+          "": "fa:Posted {when}"
+        }
+      },
+      "enums": {},
+      "hashes": {
+        "fa-IR::": "0d8c22dcf499bc8c"
+      }
+    },
+    "brief": {
+      "id": "brief",
+      "source": "Brief: {text}",
+      "params": {
+        "text": {
+          "kind": "user"
+        }
+      },
+      "axes": {},
+      "cells": {
+        "fa-IR": {
+          "": "fa:Brief: {text}"
+        }
+      },
+      "enums": {},
+      "hashes": {
+        "fa-IR::": "5c844ac09309f6f7"
+      }
+    },
+    "summary": {
+      "id": "summary",
+      "source": "Summary: {text}",
+      "params": {
+        "text": {
+          "kind": "user_adapted",
+          "context": "campaign summary"
+        }
+      },
+      "axes": {},
+      "cells": {
+        "fa-IR": {
+          "": "fa:Summary: {text}"
+        }
+      },
+      "enums": {},
+      "hashes": {
+        "fa-IR::": "66314d75a76b869b"
+      }
+    },
+    "greeting": {
+      "id": "greeting",
+      "source": "{name}, your account is ready",
+      "params": {
+        "name": {
+          "kind": "literal"
+        }
+      },
+      "axes": {
+        "gender": [
+          "male",
+          "female"
+        ]
+      },
+      "cells": {
+        "fa-IR": {
+          "gender=male": "fa:{name}, your account is ready \u00abgender=male\u00bb",
+          "gender=female": "fa:{name}, your account is ready \u00abgender=female\u00bb"
+        }
+      },
+      "enums": {},
+      "hashes": {
+        "fa-IR::gender=male": "6a3e2150d8501926",
+        "fa-IR::gender=female": "ec743205af7f3b30"
+      }
+    },
+    "listing": {
+      "id": "listing",
+      "source": "{creator} charges {amount} for {count} posts, status {status}, by {date}",
+      "params": {
+        "creator": {
+          "kind": "literal"
+        },
+        "amount": {
+          "kind": "currency",
+          "currency_code": "NPR"
+        },
+        "count": {
+          "kind": "plural"
+        },
+        "status": {
+          "kind": "translatable",
+          "values": [
+            "approved",
+            "pending"
+          ],
+          "inline": false
+        },
+        "date": {
+          "kind": "date",
+          "fmt": "medium"
+        }
+      },
+      "axes": {
+        "gender": [
+          "male",
+          "female"
+        ],
+        "plural": [
+          "one",
+          "other"
+        ]
+      },
+      "cells": {
+        "fa-IR": {
+          "gender=male|plural=one": "fa:{creator} charges {amount} for {count} posts, status {status}, by {date} \u00abgender=male, plural=one\u00bb",
+          "gender=male|plural=other": "fa:{creator} charges {amount} for {count} posts, status {status}, by {date} \u00abgender=male, plural=other\u00bb",
+          "gender=female|plural=one": "fa:{creator} charges {amount} for {count} posts, status {status}, by {date} \u00abgender=female, plural=one\u00bb",
+          "gender=female|plural=other": "fa:{creator} charges {amount} for {count} posts, status {status}, by {date} \u00abgender=female, plural=other\u00bb"
+        }
+      },
+      "enums": {
+        "fa-IR": {
+          "status": {
+            "approved": "fa:approved",
+            "pending": "fa:pending"
+          }
+        }
+      },
+      "hashes": {
+        "fa-IR::gender=male|plural=one": "d760da9b8f66220e",
+        "fa-IR::gender=male|plural=other": "713a3ced893fa8c4",
+        "fa-IR::gender=female|plural=one": "2c95b89dde2f08af",
+        "fa-IR::gender=female|plural=other": "18238d7b9ad90b82",
+        "fa-IR::enum::status": "d094a1ee0874249d"
+      }
+    }
+  }
+}

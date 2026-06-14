@@ -1,0 +1,180 @@
+{
+  "version": 1,
+  "source_locale": "en-US",
+  "locales": [
+    "ar-SA"
+  ],
+  "entries": {
+    "greeting": {
+      "id": "greeting",
+      "source": "{name}, your account is ready",
+      "params": {
+        "name": {
+          "kind": "literal"
+        }
+      },
+      "axes": {
+        "gender": [
+          "male",
+          "female"
+        ]
+      },
+      "cells": {
+        "ar-SA": {
+          "gender=male": "{name}، حسابك جاهز",
+          "gender=female": "{name}، حسابك جاهز"
+        }
+      },
+      "enums": {
+        "ar-SA": {}
+      },
+      "hashes": {
+        "ar-SA::gender=male": "994675d7ffd7011f",
+        "ar-SA::gender=female": "994675d7ffd7011f"
+      }
+    },
+    "followers": {
+      "id": "followers",
+      "source": "{n} followers",
+      "params": {
+        "n": {
+          "kind": "number"
+        }
+      },
+      "axes": {},
+      "cells": {
+        "ar-SA": {
+          "": "{n} متابعون"
+        }
+      },
+      "enums": {
+        "ar-SA": {}
+      },
+      "hashes": {
+        "ar-SA::": "ed73653096e032b8"
+      }
+    },
+    "inbox": {
+      "id": "inbox",
+      "source": "You have {count} messages",
+      "params": {
+        "count": {
+          "kind": "plural"
+        }
+      },
+      "axes": {
+        "plural": [
+          "zero",
+          "one",
+          "two",
+          "few",
+          "many",
+          "other"
+        ]
+      },
+      "cells": {
+        "ar-SA": {
+          "plural=zero": "لديك {count} رسائل",
+          "plural=one": "لديك {count} رسالة",
+          "plural=two": "لديك {count} رسالتان",
+          "plural=few": "لديك {count} رسائل",
+          "plural=many": "لديك {count} رسائل",
+          "plural=other": "لديك {count} رسائل"
+        }
+      },
+      "enums": {
+        "ar-SA": {}
+      },
+      "hashes": {
+        "ar-SA::plural=zero": "bcd9cc733ec949ed",
+        "ar-SA::plural=one": "9e713772bb7979eb",
+        "ar-SA::plural=two": "29a719c907ed34d2",
+        "ar-SA::plural=few": "bcd9cc733ec949ed",
+        "ar-SA::plural=many": "bcd9cc733ec949ed",
+        "ar-SA::plural=other": "bcd9cc733ec949ed"
+      }
+    },
+    "fee": {
+      "id": "fee",
+      "source": "{creator} charges {amount} per post",
+      "params": {
+        "creator": {
+          "kind": "literal"
+        },
+        "amount": {
+          "kind": "currency",
+          "currency_code": "NPR"
+        }
+      },
+      "axes": {},
+      "cells": {
+        "ar-SA": {
+          "": "{creator} يفرض {amount} لكل منشور"
+        }
+      },
+      "enums": {
+        "ar-SA": {}
+      },
+      "hashes": {
+        "ar-SA::": "28cb38c50a1819eb"
+      }
+    },
+    "campaign_status": {
+      "id": "campaign_status",
+      "source": "Campaign is {status}",
+      "params": {
+        "status": {
+          "kind": "translatable",
+          "values": [
+            "approved",
+            "pending",
+            "rejected"
+          ],
+          "inline": false,
+          "context": "campaign review status"
+        }
+      },
+      "axes": {},
+      "cells": {
+        "ar-SA": {
+          "": "الحملة هي {status}"
+        }
+      },
+      "enums": {
+        "ar-SA": {
+          "status": {
+            "approved": "موافق عليه",
+            "pending": "قيد الانتظار",
+            "rejected": "مرفوض"
+          }
+        }
+      },
+      "hashes": {
+        "ar-SA::": "c0bc2e1983b952dc",
+        "ar-SA::enum::status": "2ba252dbce31d994"
+      }
+    },
+    "deadline": {
+      "id": "deadline",
+      "source": "Deliver by {date}",
+      "params": {
+        "date": {
+          "kind": "date",
+          "fmt": "long"
+        }
+      },
+      "axes": {},
+      "cells": {
+        "ar-SA": {
+          "": "توصيل بحلول {date}"
+        }
+      },
+      "enums": {
+        "ar-SA": {}
+      },
+      "hashes": {
+        "ar-SA::": "0f10d529366e67e6"
+      }
+    }
+  }
+}

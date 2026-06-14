@@ -1,0 +1,172 @@
+{
+  "version": 1,
+  "source_locale": "en-US",
+  "locales": [
+    "ne-NP"
+  ],
+  "entries": {
+    "greeting": {
+      "id": "greeting",
+      "source": "{name}, your account is ready",
+      "params": {
+        "name": {
+          "kind": "literal"
+        }
+      },
+      "axes": {
+        "gender": [
+          "male",
+          "female"
+        ]
+      },
+      "cells": {
+        "ne-NP": {
+          "gender=male": "{name}, तपाइँको खाता तयार छ",
+          "gender=female": "{name}, तपाईंको खाता तयार छ"
+        }
+      },
+      "enums": {
+        "ne-NP": {}
+      },
+      "hashes": {
+        "ne-NP::gender=male": "b55bb82d0b202b09",
+        "ne-NP::gender=female": "ff38af417e0f0df6"
+      }
+    },
+    "followers": {
+      "id": "followers",
+      "source": "{n} followers",
+      "params": {
+        "n": {
+          "kind": "number"
+        }
+      },
+      "axes": {},
+      "cells": {
+        "ne-NP": {
+          "": "{n} अनुयायी"
+        }
+      },
+      "enums": {
+        "ne-NP": {}
+      },
+      "hashes": {
+        "ne-NP::": "ff378502f1775ff9"
+      }
+    },
+    "inbox": {
+      "id": "inbox",
+      "source": "You have {count} messages",
+      "params": {
+        "count": {
+          "kind": "plural"
+        }
+      },
+      "axes": {
+        "plural": [
+          "zero",
+          "one",
+          "two",
+          "few",
+          "many",
+          "other"
+        ]
+      },
+      "cells": {
+        "ne-NP": {
+          "plural=one": "तपाईंसँग {count} सन्देश छ",
+          "plural=other": "तपाईंसँग {count} सन्देशहरू छन्"
+        }
+      },
+      "enums": {
+        "ne-NP": {}
+      },
+      "hashes": {
+        "ne-NP::plural=one": "5be81cf36cad3194",
+        "ne-NP::plural=other": "04401d2eaef0b0ed"
+      }
+    },
+    "fee": {
+      "id": "fee",
+      "source": "{creator} charges {amount} per post",
+      "params": {
+        "creator": {
+          "kind": "literal"
+        },
+        "amount": {
+          "kind": "currency",
+          "currency_code": "NPR"
+        }
+      },
+      "axes": {},
+      "cells": {
+        "ne-NP": {
+          "": "{creator} ले प्रति पोस्ट {amount} चार्ज गर्छन्/छिन्"
+        }
+      },
+      "enums": {
+        "ne-NP": {}
+      },
+      "hashes": {
+        "ne-NP::": "4bf364f9c244b101"
+      }
+    },
+    "campaign_status": {
+      "id": "campaign_status",
+      "source": "Campaign is {status}",
+      "params": {
+        "status": {
+          "kind": "translatable",
+          "values": [
+            "approved",
+            "pending",
+            "rejected"
+          ],
+          "inline": false,
+          "context": "campaign review status"
+        }
+      },
+      "axes": {},
+      "cells": {
+        "ne-NP": {
+          "": "अभियान {status} छ"
+        }
+      },
+      "enums": {
+        "ne-NP": {
+          "status": {
+            "approved": "स्वीकृत",
+            "pending": "लमビत",
+            "rejected": "अस्वीकृत"
+          }
+        }
+      },
+      "hashes": {
+        "ne-NP::": "06b09bc59fd810ac",
+        "ne-NP::enum::status": "709a51d1ac0c8f00"
+      }
+    },
+    "deadline": {
+      "id": "deadline",
+      "source": "Deliver by {date}",
+      "params": {
+        "date": {
+          "kind": "date",
+          "fmt": "long"
+        }
+      },
+      "axes": {},
+      "cells": {
+        "ne-NP": {
+          "": "{date} सम्म डिलिभर गरिनेछ"
+        }
+      },
+      "enums": {
+        "ne-NP": {}
+      },
+      "hashes": {
+        "ne-NP::": "dbebcf8980b084f3"
+      }
+    }
+  }
+}

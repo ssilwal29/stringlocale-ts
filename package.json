@@ -1,0 +1,78 @@
+{
+  "name": "stringlocale",
+  "version": "0.1.0",
+  "description": "LLM-powered, build-time localization with a pure-lookup offline runtime. TypeScript/React runtime reading the same bundles as the Python compiler.",
+  "type": "module",
+  "license": "MIT",
+  "author": "Sajan Silwal",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ssilwal29/stringlocale-ts.git"
+  },
+  "homepage": "https://github.com/ssilwal29/stringlocale-ts#readme",
+  "bugs": {
+    "url": "https://github.com/ssilwal29/stringlocale-ts/issues"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "i18n",
+    "l10n",
+    "localization",
+    "translation",
+    "react",
+    "llm",
+    "cldr",
+    "intl"
+  ],
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./react": {
+      "types": "./dist/react/index.d.ts",
+      "import": "./dist/react/index.js",
+      "require": "./dist/react/index.cjs"
+    }
+  },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "bin": {
+    "stringlocale": "./dist/cli/index.js"
+  },
+  "scripts": {
+    "build": "tsup",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "prepublishOnly": "npm run typecheck && npm run test && npm run build"
+  },
+  "peerDependencies": {
+    "react": ">=17.0.0"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@types/node": "^25.9.3",
+    "@types/react": "^18.3.0",
+    "react": "^18.3.0",
+    "tsup": "^8.0.0",
+    "typescript": "^5.4.0",
+    "vitest": "^1.6.0"
+  }
+}
