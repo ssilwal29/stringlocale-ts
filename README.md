@@ -4,39 +4,110 @@
 [![npm](https://img.shields.io/npm/v/stringlocale.svg)](https://www.npmjs.com/package/stringlocale)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-Typed, build-time localization. You declare each user-facing string once as a
-typed object; a CLI drafts the translations into static JSON bundles at build
-time; your app resolves them offline with native `Intl` formatting. No
-translation API is called at runtime.
+Your UI strings have parameters — a count, a name, a price, a date. Translating
+them isn't just swapping words:
+
+* **Spanish** needs gender agreement — *"Bienvenido"* vs *"Bienvenida"*.
+* **Arabic** has six plural forms and its own digits (٥, not 5).
+* **Nepali** writes numbers in Devanagari (१२००) and pluralizes differently again.
+
+Normally you hand-maintain every one of those variants, per language, in JSON
+files that drift from your code. **stringlocale** flips it around: you declare
+each string **once in English** and tag every parameter with what it is — a
+number, a plural count, a currency, a date, a gendered subject. A build-time
+compiler then generates **every axis variant** (gender × plural × …) for **every
+target language**, drafted by an LLM, into static JSON. At runtime your app just
+looks them up — digits, currency, dates, and plurals formatted by the platform
+`Intl` APIs, with no translation API call.
 
 This package is the **TypeScript/React runtime plus a CLI** (`compile`, `check`,
-`prune`). It reads and writes the same bundle format as the Python `stringlocale`
-compiler, so backend and frontend can share one set of compiled translations.
+`prune`), reading and writing the same bundle format as the Python `stringlocale`
+compiler — so backend and frontend share one set of translations.
 
-## The flow
+## Quick start
 
-| Step | Command / API | What you write | What you get |
-| --- | --- | --- | --- |
-| **1. Declare** | `new StringLocale(...)` | strings in code, with typed params | type-safe references, one source of truth |
-| **2. Compile** | `stringlocale compile` | — | static `*.json` locale bundles, drafted per locale |
-| **3. Resolve** | `t(str, args)` / `<Tr>` | call sites | offline, `Intl`-formatted output per locale |
-
-Two more CLI commands keep step 2 honest as the code changes:
-
-* `stringlocale check` — fail CI when the bundle is out of sync with the code.
-* `stringlocale prune` — drop entries for strings you deleted.
-
-## Install
+**1. Install**
 
 ```bash
 npm install stringlocale
 ```
 
-The core runtime has zero dependencies. React bindings are an optional peer
-dependency, imported from the `/react` entry. The CLI ships in the same package
-as the `stringlocale` bin.
+The runtime is dependency-free; React bindings are an optional peer dependency
+under `stringlocale/react`.
 
-## 1. Declare
+**2. Declare your strings** — once, in English, with a `Param` per `{placeholder}`:
+
+```ts
+// strings.ts
+import { Param, StringLocale } from "stringlocale";
+
+export const greeting = new StringLocale("Welcome back, {name}", {
+  id: "greeting",
+  params: { name: Param.literal() },
+  gendered: true,                       // gendered languages get both forms
+});
+
+export const inbox = new StringLocale("You have {count} messages", {
+  id: "inbox",
+  params: { count: Param.plural() },    // each language's plural forms
+});
+
+export const fee = new StringLocale("{creator} charges {amount} per post", {
+  id: "fee",
+  params: { creator: Param.literal(), amount: Param.currency("USD") },
+});
+```
+
+**3. Set your translator key** — the compiler drafts translations via OpenRouter:
+
+```bash
+export OPENROUTER_API_KEY=sk-or-...
+# no key? add --stub to emit placeholders and wire up the pipeline first
+```
+
+**4. Compile to your target languages** (the CLI reads your `.ts` via `tsx`):
+
+```bash
+npx tsx node_modules/stringlocale/dist/cli/index.js compile \
+  --sources strings.ts \
+  --source-locale en-US \
+  --locales es-ES ne-NP ar-SA \
+  --out public/i18n
+```
+
+This writes `public/i18n/manifest.json` plus one `bundle.<locale>.json` per
+language, with every gender/plural variant filled in. Re-running only
+re-translates strings whose source text changed.
+
+> Plain-JS declarations build to `.js`? Call the bundled bin directly:
+> `npx stringlocale compile --sources dist/strings.js …` (Node can't import `.ts`).
+
+**5. Use them — same call, any language:**
+
+```ts
+import { loadFromUrl } from "stringlocale";
+import { greeting, inbox } from "./strings";
+
+const store = await loadFromUrl("/i18n");
+
+greeting.resolve({ store, locale: "es-ES" }, { name: "María", gender: "female" });
+// e.g. "Bienvenida de nuevo, María"  (feminine variant)
+
+inbox.resolve({ store, locale: "ne-NP" }, { count: 5 });
+// "तपाईंसँग ५ सन्देशहरू छन्"  (Devanagari digits, Nepali plural)
+```
+
+In React, wrap the app in `<StringLocaleProvider>` and call `useTranslation()` —
+see [Resolving](#resolving).
+
+**6. Keep bundles in sync as code changes:**
+
+```bash
+npx tsx node_modules/stringlocale/dist/cli/index.js check --sources strings.ts --out public/i18n   # CI gate: fail on drift
+npx tsx node_modules/stringlocale/dist/cli/index.js prune --sources strings.ts --out public/i18n   # remove deleted strings
+```
+
+## Declaring strings
 
 Each string is one typed object: a stable `id`, the source text, and a `Param`
 per `{placeholder}` describing how that value renders. Placeholders are
@@ -75,7 +146,7 @@ You do not write translation keys, per-locale JSON, plural tables, or formatting
 code — the params carry enough structure for the compiler to translate and the
 runtime to format.
 
-## 2. Compile, check, prune
+## CLI reference: compile · check · prune
 
 ### `compile`
 
@@ -157,7 +228,11 @@ same layout.
 > declarations directly. If your source of truth is Python, the Python CLI takes
 > `--sources strings.py` and writes the identical bundle format.
 
-## 3. Resolve
+> **`dashboard`.** The Python CLI also ships a `dashboard` command (a static HTML
+> translation editor); the TypeScript CLI currently implements `compile`,
+> `check`, and `prune` only.
+
+## Resolving
 
 Load the bundles once at startup, then resolve strings anywhere. No LLM or
 network call happens at resolve time — it's a pure lookup, with numbers, dates,
