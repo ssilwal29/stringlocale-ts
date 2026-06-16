@@ -6,11 +6,59 @@
  *   compile   discover strings, draft translations, write bundles
  *   check     CI gate: fail on missing/orphaned/stale/placeholder drift
  *   prune     remove orphaned entries from a bundle (no re-translation)
- *
- * Run via tsx for TypeScript sources, or after compiling to JS:
- *   npx tsx src/cli/index.ts compile --sources src/ --locales ne-NP fr-FR
- *   stringlocale compile --sources dist/ --locales ne-NP fr-FR
  */
+import { spawnSync } from "node:child_process";
+import { existsSync } from "node:fs";
+import { resolve } from "node:path";
+
+// ── TypeScript source bootstrap ───────────────────────────────────────────────
+// The published bin is plain Node and cannot import .ts files directly.
+// When --sources includes a .ts/.tsx path we find tsx in the project's
+// node_modules or global PATH and re-execute through it automatically.
+// A sentinel env var prevents infinite re-entry.
+
+const _TS_LOADER = "_STRINGLOCALE_TS_LOADER";
+
+function findTsx(): string | undefined {
+  // Project-local tsx (most common: installed as a devDependency).
+  const local = resolve(process.cwd(), "node_modules/.bin/tsx");
+  if (existsSync(local)) return local;
+  // Fall back to a global install.
+  const which = process.platform === "win32" ? "where" : "which";
+  const r = spawnSync(which, ["tsx"], { encoding: "utf8" });
+  return r.status === 0 ? r.stdout.trim().split("\n")[0] : undefined;
+}
+
+(function maybeRespawnWithTsx() {
+  if (process.env[_TS_LOADER]) return; // already running via tsx
+  const argv = process.argv.slice(2);
+  // Scan only the values that follow --sources (stop at the next flag).
+  let hasTsSource = false;
+  const si = argv.indexOf("--sources");
+  if (si !== -1) {
+    for (let i = si + 1; i < argv.length && !argv[i].startsWith("--"); i++) {
+      if (/\.tsx?$/.test(argv[i])) { hasTsSource = true; break; }
+    }
+  }
+  if (!hasTsSource) return;
+
+  const tsx = findTsx();
+  if (!tsx) {
+    process.stderr.write(
+      "error: .ts sources require a TypeScript loader.\n" +
+        "  Install one:  npm install -D tsx\n" +
+        "  The CLI picks it up automatically on next run.\n",
+    );
+    process.exit(1);
+  }
+  // Re-run this exact script through tsx and exit when it finishes.
+  const result = spawnSync(tsx, [process.argv[1], ...argv], {
+    stdio: "inherit",
+    env: { ...process.env, [_TS_LOADER]: "1" },
+  });
+  process.exit(result.status ?? 1);
+})();
+
 import * as registry from "../registry";
 import { readBundle, writeBundle } from "./bundle-io";
 import { cellCount, compileStrings, discover } from "./compile";

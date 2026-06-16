@@ -58,8 +58,20 @@ export async function discover(
     try {
       await import(pathToFileURL(file).href);
     } catch (err) {
-      if (strict) throw new Error(`Failed to import ${file}: ${err}`);
-      progress(`[warn] skipping ${file}: ${err}`);
+      const code = (err as NodeJS.ErrnoException).code;
+      const isTs = /\.tsx?$/.test(file);
+      if (code === "ERR_UNKNOWN_FILE_EXTENSION" && isTs) {
+        // Node can't import .ts without a loader; tsx auto-detection at
+        // startup only covers explicit --sources paths, not directory scans.
+        const msg =
+          `cannot import ${file}: TypeScript loader required.\n` +
+          `  Install tsx (npm install -D tsx) and the CLI picks it up automatically.`;
+        if (strict) throw new Error(msg);
+        progress(`[warn] ${msg}`);
+      } else {
+        if (strict) throw new Error(`Failed to import ${file}: ${err}`);
+        progress(`[warn] skipping ${file}: ${err}`);
+      }
     }
   }
   return registry.count();
