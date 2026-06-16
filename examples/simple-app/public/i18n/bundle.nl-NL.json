@@ -21,16 +21,16 @@
       },
       "cells": {
         "nl-NL": {
-          "gender=male": "{name}, uw account is klaar",
-          "gender=female": "{name}, je account is klaar"
+          "gender=male": "{name}, je account is gereed",
+          "gender=female": "{name}, je account is gereed"
         }
       },
       "enums": {
         "nl-NL": {}
       },
       "hashes": {
-        "nl-NL::gender=male": "9a3e5aa8d3595acd",
-        "nl-NL::gender=female": "8de3e8a66b397a85"
+        "nl-NL::gender=male": "5feac61a0365aadb",
+        "nl-NL::gender=female": "5feac61a0365aadb"
       }
     },
     "followers": {
@@ -62,19 +62,28 @@
           "kind": "plural"
         }
       },
-      "axes": {},
+      "axes": {
+        "plural": [
+          "zero",
+          "one",
+          "two",
+          "few",
+          "many",
+          "other"
+        ]
+      },
       "cells": {
         "nl-NL": {
-          "plural=one": "Je hebt {count} bericht",
-          "plural=other": "Je hebt {count} berichten"
+          "plural=one": "U hebt {count} berichten",
+          "plural=other": "U heeft {count} berichten"
         }
       },
       "enums": {
         "nl-NL": {}
       },
       "hashes": {
-        "nl-NL::plural=one": "a48bb927c9fab0d7",
-        "nl-NL::plural=other": "36ac97c6c266b5bd"
+        "nl-NL::plural=one": "8812707028aef0a1",
+        "nl-NL::plural=other": "9511592e24ce59d0"
       }
     },
     "fee": {
@@ -92,14 +101,14 @@
       "axes": {},
       "cells": {
         "nl-NL": {
-          "": "{creator} berekent {amount} per post"
+          "": "{creator} rekent {amount} per post aan"
         }
       },
       "enums": {
         "nl-NL": {}
       },
       "hashes": {
-        "nl-NL::": "27edd109495402fe"
+        "nl-NL::": "0de91aaa3946d67c"
       }
     },
     "campaign_status": {
@@ -149,14 +158,14 @@
       "axes": {},
       "cells": {
         "nl-NL": {
-          "": "Bezorgen op {date}"
+          "": "Bezorgen voor {date}"
         }
       },
       "enums": {
         "nl-NL": {}
       },
       "hashes": {
-        "nl-NL::": "cd78e8fa6d53b99f"
+        "nl-NL::": "a9bca2587db84102"
       }
     },
     "bio": {
@@ -170,14 +179,14 @@
       "axes": {},
       "cells": {
         "nl-NL": {
-          "": "Bio — {text}"
+          "": "Biografie — {text}"
         }
       },
       "enums": {
         "nl-NL": {}
       },
       "hashes": {
-        "nl-NL::": "63dab93765d0b96f"
+        "nl-NL::": "8a3ca9702e9110dc"
       }
     },
     "monthly": {
@@ -202,5 +211,6 @@
         "nl-NL::": "676991c0e2113879"
       }
     }
-  }
+  },
+  "model": "google/gemini-2.5-flash"
 }

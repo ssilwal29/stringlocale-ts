@@ -62,14 +62,23 @@
           "kind": "plural"
         }
       },
-      "axes": {},
+      "axes": {
+        "plural": [
+          "zero",
+          "one",
+          "two",
+          "few",
+          "many",
+          "other"
+        ]
+      },
       "cells": {
         "ar-SA": {
-          "plural=zero": "لديك {count} رسائل",
+          "plural=zero": "ليس لديك أي رسائل",
           "plural=one": "لديك {count} رسالة",
           "plural=two": "لديك {count} رسالتان",
           "plural=few": "لديك {count} رسائل",
-          "plural=many": "لديك {count} رسائل",
+          "plural=many": "لديكم {count} رسائل",
           "plural=other": "لديك {count} رسائل"
         }
       },
@@ -77,11 +86,11 @@
         "ar-SA": {}
       },
       "hashes": {
-        "ar-SA::plural=zero": "bcd9cc733ec949ed",
+        "ar-SA::plural=zero": "3dccb3e81ff3bf56",
         "ar-SA::plural=one": "9e713772bb7979eb",
         "ar-SA::plural=two": "29a719c907ed34d2",
         "ar-SA::plural=few": "bcd9cc733ec949ed",
-        "ar-SA::plural=many": "bcd9cc733ec949ed",
+        "ar-SA::plural=many": "b6f1f899a17eda55",
         "ar-SA::plural=other": "bcd9cc733ec949ed"
       }
     },
@@ -100,14 +109,14 @@
       "axes": {},
       "cells": {
         "ar-SA": {
-          "": "{creator} يفرض {amount} لكل منشور"
+          "": "يتقاضى {creator} {amount} لكل منشور"
         }
       },
       "enums": {
         "ar-SA": {}
       },
       "hashes": {
-        "ar-SA::": "28cb38c50a1819eb"
+        "ar-SA::": "e6e1bda8e3681252"
       }
     },
     "campaign_status": {
@@ -128,21 +137,21 @@
       "axes": {},
       "cells": {
         "ar-SA": {
-          "": "الحملة هي {status}"
+          "": "الحملة {status}"
         }
       },
       "enums": {
         "ar-SA": {
           "status": {
-            "approved": "موافق عليه",
-            "pending": "قيد الانتظار",
+            "approved": "مقبول",
+            "pending": "في انتظار المراجعة",
             "rejected": "مرفوض"
           }
         }
       },
       "hashes": {
-        "ar-SA::": "c0bc2e1983b952dc",
-        "ar-SA::enum::status": "2ba252dbce31d994"
+        "ar-SA::": "4c52adac2ab821cc",
+        "ar-SA::enum::status": "9e971c9e5855239a"
       }
     },
     "deadline": {
@@ -157,14 +166,14 @@
       "axes": {},
       "cells": {
         "ar-SA": {
-          "": "توصيل بحلول {date}"
+          "": "يتم التوصيل بحلول {date}"
         }
       },
       "enums": {
         "ar-SA": {}
       },
       "hashes": {
-        "ar-SA::": "0f10d529366e67e6"
+        "ar-SA::": "f888bfa171e86aea"
       }
     },
     "bio": {
@@ -210,5 +219,6 @@
         "ar-SA::": "b5c8309a9a0c2b21"
       }
     }
-  }
+  },
+  "model": "google/gemini-2.5-flash"
 }

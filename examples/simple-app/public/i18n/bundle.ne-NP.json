@@ -21,7 +21,7 @@
       },
       "cells": {
         "ne-NP": {
-          "gender=male": "{name}, तपाइँको खाता तयार छ",
+          "gender=male": "{name}, तपाईँको खाता तयार छ",
           "gender=female": "{name}, तपाईंको खाता तयार छ"
         }
       },
@@ -29,7 +29,7 @@
         "ne-NP": {}
       },
       "hashes": {
-        "ne-NP::gender=male": "b55bb82d0b202b09",
+        "ne-NP::gender=male": "fe1d998cde62dc75",
         "ne-NP::gender=female": "ff38af417e0f0df6"
       }
     },
@@ -44,14 +44,14 @@
       "axes": {},
       "cells": {
         "ne-NP": {
-          "": "{n} अनुयायी"
+          "": "{n} अनुयायीहरू"
         }
       },
       "enums": {
         "ne-NP": {}
       },
       "hashes": {
-        "ne-NP::": "ff378502f1775ff9"
+        "ne-NP::": "33d08699bbbab45f"
       }
     },
     "inbox": {
@@ -62,19 +62,28 @@
           "kind": "plural"
         }
       },
-      "axes": {},
+      "axes": {
+        "plural": [
+          "zero",
+          "one",
+          "two",
+          "few",
+          "many",
+          "other"
+        ]
+      },
       "cells": {
         "ne-NP": {
-          "plural=one": "तपाईंसँग {count} सन्देश छ",
-          "plural=other": "तपाईंसँग {count} सन्देशहरू छन्"
+          "plural=one": "तपाईंसँग {count} सन्देशहरू छन्",
+          "plural=other": "तपाईं सँग {count} सन्देशहरू छन्"
         }
       },
       "enums": {
         "ne-NP": {}
       },
       "hashes": {
-        "ne-NP::plural=one": "5be81cf36cad3194",
-        "ne-NP::plural=other": "04401d2eaef0b0ed"
+        "ne-NP::plural=one": "04401d2eaef0b0ed",
+        "ne-NP::plural=other": "c8540de7f57d2186"
       }
     },
     "fee": {
@@ -92,14 +101,14 @@
       "axes": {},
       "cells": {
         "ne-NP": {
-          "": "{creator} ले प्रति पोस्ट {amount} चार्ज गर्छन्/छिन्"
+          "": "{creator} ले प्रति पोस्ट {amount} शुल्क लिन्छन्"
         }
       },
       "enums": {
         "ne-NP": {}
       },
       "hashes": {
-        "ne-NP::": "4bf364f9c244b101"
+        "ne-NP::": "3daea240b1a53791"
       }
     },
     "campaign_status": {
@@ -120,21 +129,21 @@
       "axes": {},
       "cells": {
         "ne-NP": {
-          "": "अभियान {status} छ"
+          "": "अभियान {स्थिति} छ।"
         }
       },
       "enums": {
         "ne-NP": {
           "status": {
-            "approved": "स्वीकृत",
-            "pending": "लमビत",
+            "approved": "अनुमोदित",
+            "pending": "विचाराधीन",
             "rejected": "अस्वीकृत"
           }
         }
       },
       "hashes": {
-        "ne-NP::": "06b09bc59fd810ac",
-        "ne-NP::enum::status": "709a51d1ac0c8f00"
+        "ne-NP::": "f0c6fe3f751b9b81",
+        "ne-NP::enum::status": "eef549d75ad82258"
       }
     },
     "deadline": {
@@ -149,14 +158,14 @@
       "axes": {},
       "cells": {
         "ne-NP": {
-          "": "{date} सम्म डिलिभर गरिनेछ"
+          "": "डिलीभेरिको मिति {date} सम्म"
         }
       },
       "enums": {
         "ne-NP": {}
       },
       "hashes": {
-        "ne-NP::": "dbebcf8980b084f3"
+        "ne-NP::": "9a2d09f8a99d1983"
       }
     },
     "bio": {
@@ -202,5 +211,6 @@
         "ne-NP::": "1bbc4585556bb9f5"
       }
     }
-  }
+  },
+  "model": "google/gemini-2.5-flash"
 }

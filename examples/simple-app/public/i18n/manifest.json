@@ -10,5 +10,6 @@
     "ne-NP": "bundle.ne-NP.json",
     "nl-NL": "bundle.nl-NL.json",
     "ar-SA": "bundle.ar-SA.json"
-  }
+  },
+  "model": "google/gemini-2.5-flash"
 }
