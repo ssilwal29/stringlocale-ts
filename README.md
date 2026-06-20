@@ -21,7 +21,7 @@ looks them up — digits, currency, dates, and plurals formatted by the platform
 `Intl` APIs, with no translation API call.
 
 This package is the **TypeScript/React runtime plus a CLI** (`compile`, `check`,
-`prune`). The compiler writes plain-JSON locale bundles and the runtime reads
+`prune`, `review`). The compiler writes plain-JSON locale bundles and the runtime reads
 them back — one portable set of translations.
 
 ## Quick start
@@ -58,11 +58,13 @@ export const fee = new StringLocale("{creator} charges {amount} per post", {
 });
 ```
 
-**3. Set your translator key** — the compiler drafts translations via
-[OpenRouter](https://openrouter.ai/keys):
+**3. Set your translator key** — the compiler drafts translations via an
+OpenAI-compatible chat-completions endpoint (OpenRouter by default):
 
 ```bash
-export OPENROUTER_API_KEY=sk-or-...
+export STRINGLOCALE_API_KEY=your-api-key
+# optional endpoint override:
+# export STRINGLOCALE_TRANSLATION_ENDPOINT=https://openrouter.ai/api/v1/chat/completions
 # no key? add --stub to emit placeholders and wire up the pipeline first
 ```
 
@@ -147,7 +149,7 @@ You do not write translation keys, per-locale JSON, plural tables, or formatting
 code — the params carry enough structure for the compiler to translate and the
 runtime to format.
 
-## CLI reference: compile · check · prune
+## CLI reference: compile · check · prune · review
 
 ### `compile`
 
@@ -169,7 +171,8 @@ stringlocale compile \
 | `--locales <tags...>` | required | Target locales — full `language-REGION` tags (`ne-NP`, not `ne`) |
 | `--out <dir>` | `dist` | Output directory |
 | `--source-locale <tag>` | `en` | Locale of the source strings |
-| `--model <id>` | `google/gemini-2.5-flash` | OpenRouter model used to draft translations (env: `STRINGLOCALE_MODEL`) |
+| `--model <id>` | `google/gemini-2.5-flash` | Model used to draft translations (env: `STRINGLOCALE_MODEL`) |
+| `--translator-endpoint <url>` | `https://openrouter.ai/api/v1/chat/completions` | OpenAI-compatible chat-completions endpoint (env: `STRINGLOCALE_TRANSLATION_ENDPOINT`) |
 | `--combined` | off | Emit one `bundle.json` instead of split per-locale files |
 | `--no-incremental` | off | Re-draft every cell instead of reusing unchanged ones |
 | `--stub` | off | Use the offline deterministic stub translator |
@@ -177,16 +180,16 @@ stringlocale compile \
 | `--openrouter-timeout <s>` | `60` | Per-request timeout for the OpenRouter translator |
 | `--openrouter-retries <n>` | `3` | Attempts per request, including the first |
 
-**Translator & the OpenRouter key.** `compile` drafts translations through
-[OpenRouter](https://openrouter.ai). Pass your key via the `OPENROUTER_API_KEY`
-environment variable — export it for the session/CI, or inline it for one run:
+**Translator key.** `compile` drafts translations through an OpenAI-compatible
+endpoint. Pass your key via `STRINGLOCALE_API_KEY` (or legacy
+`OPENROUTER_API_KEY`) — export it for the session/CI, or inline it for one run:
 
 ```bash
-export OPENROUTER_API_KEY=sk-or-...
+export STRINGLOCALE_API_KEY=your-api-key
 npx stringlocale compile --sources strings.js --locales es-ES ne-NP ar-SA --out public/i18n
 
 # …or just for this command:
-OPENROUTER_API_KEY=sk-or-... npx stringlocale compile --sources strings.js --locales es-ES --out public/i18n
+STRINGLOCALE_API_KEY=your-api-key npx stringlocale compile --sources strings.js --locales es-ES --out public/i18n
 ```
 
 Tune requests with `--openrouter-timeout` and `--openrouter-retries`. With **no
@@ -242,6 +245,36 @@ stringlocale prune --sources strings.ts --out public/i18n
 
 Pass `--combined` if the bundle was written combined, so it's rewritten in the
 same layout.
+
+### `review`
+
+Serves a local web UI for browsing and editing the compiled bundle — a
+language-by-language dashboard for translators to review drafts and fix copy
+without touching JSON. It reads the bundle from `--out`, serves it over HTTP, and
+writes edits straight back to disk on save. No external dependencies and no build
+step — it's a single self-contained page served from Node.
+
+```bash
+stringlocale review --out public/i18n            # http://localhost:3000
+stringlocale review --out public/i18n --port 4000
+```
+
+| Flag | Default | Meaning |
+| --- | --- | --- |
+| `--out <dir>` | `dist` | Directory holding the compiled bundle(s) to review |
+| `--port <n>` | `3000` | Port for the local server (binds `127.0.0.1` only) |
+
+The layout (split per-locale vs. combined `bundle.json`) is detected
+automatically from `--out`. The dashboard lets you:
+
+* **filter by locale** — review one language at a time, or all at once;
+* **see when each bundle/locale was generated** (from the file timestamps) and
+  which model drafted it;
+* **edit any cell** — each plural form, gender, or axis variant — with inline
+  placeholder validation, and **save** the changes back to the bundle on disk.
+
+The server binds to `127.0.0.1`, so it's only reachable from your machine. Stop
+it with `Ctrl-C`.
 
 > **Note on `.ts` sources.** The published `stringlocale` bin runs under plain
 > Node, which can't import `.ts` files. Point `--sources` at compiled JS, or run
@@ -309,13 +342,17 @@ Declared strings are translated ahead of time. **Dynamic text you can't compile*
 `liveTranslator` and that adapter becomes an online translator: the param is
 translated at runtime through the API.
 
-`createOpenRouterTranslator` returns an `AsyncTranslator`
+`createChatTranslator` returns an `AsyncTranslator`
 (`(text, locale, context?, signal?) => Promise<string>`):
 
 ```ts
-import { createOpenRouterTranslator } from "stringlocale";
+import { createChatTranslator } from "stringlocale";
 
-const live = createOpenRouterTranslator({ apiKey, model: "google/gemini-2.5-flash" });
+const live = createChatTranslator({
+  apiKey,
+  endpoint: "https://openrouter.ai/api/v1/chat/completions", // any OpenAI-compatible endpoint
+  model: "google/gemini-2.5-flash",
+});
 ```
 
 Hand it to the provider; any `userAdapted` value then translates online. The
@@ -354,10 +391,10 @@ passes the text through unchanged.
 > **Security.** `apiKey` is visible to whoever runs the code. Use it only on a
 > server or in local dev — never ship a real key in a browser bundle. For
 > production, set `endpoint` to your own backend route that injects the key
-> server-side: `createOpenRouterTranslator({ endpoint: "/api/translate" })`.
+> server-side: `createChatTranslator({ endpoint: "/api/translate" })`.
 
 The [`examples/simple-app`](examples/simple-app) "This month" row wires this up;
-set `VITE_OPENROUTER_API_KEY` to enable it.
+set `VITE_TRANSLATION_API_KEY` to enable it.
 
 ## Parameter types
 

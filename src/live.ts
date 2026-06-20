@@ -7,7 +7,7 @@
  * offline path for strings you declare. `AsyncTranslator` is the online path
  * for text your app receives at runtime (a bio someone is typing, a comment).
  *
- * SECURITY: `createOpenRouterTranslator({ apiKey })` puts your key in the
+ * SECURITY: `createChatTranslator({ apiKey })` puts your key in the
  * caller. That's fine for local dev or a trusted server, but DO NOT ship a real
  * key to a browser bundle — anyone can read it. In production, point `endpoint`
  * at your own backend route that injects the key server-side.
@@ -25,23 +25,28 @@ interface ChatResponse {
   choices?: Array<{ message?: { content?: string } }>;
 }
 
-export interface OpenRouterLiveOptions {
-  /** OpenRouter API key. Browser use leaks it — prefer a proxy `endpoint`. */
+export interface ChatLiveOptions {
+  /** API key used as `Authorization: Bearer ...`. Prefer a proxy `endpoint` in browsers. */
   apiKey?: string;
   /** Model id. Defaults to "google/gemini-2.5-flash". */
   model?: string;
-  /** Override the request URL — e.g. your own backend proxy that adds the key. */
+  /** OpenAI-compatible chat completions URL. */
   endpoint?: string;
-  /** Sent as HTTP-Referer (OpenRouter attribution). */
+  /** Sent as HTTP-Referer (used by OpenRouter attribution). */
   referer?: string;
+  /** Additional headers for provider-specific requirements. */
+  headers?: Record<string, string>;
 }
 
+/** Backward-compatible alias. */
+export type OpenRouterLiveOptions = ChatLiveOptions;
+
 /**
- * Build an `AsyncTranslator` backed by OpenRouter's chat-completions API, using
- * the platform `fetch` (browser or Node 18+).
+ * Build an `AsyncTranslator` backed by an OpenAI-compatible chat-completions
+ * API, using the platform `fetch` (browser or Node 18+).
  */
-export function createOpenRouterTranslator(
-  opts: OpenRouterLiveOptions = {},
+export function createChatTranslator(
+  opts: ChatLiveOptions = {},
 ): AsyncTranslator {
   const model = opts.model ?? "google/gemini-2.5-flash";
   const endpoint =
@@ -61,6 +66,7 @@ export function createOpenRouterTranslator(
 
     const headers: Record<string, string> = {
       "Content-Type": "application/json",
+      ...(opts.headers ?? {}),
     };
     if (opts.apiKey) headers["Authorization"] = `Bearer ${opts.apiKey}`;
     if (opts.referer) headers["HTTP-Referer"] = opts.referer;
@@ -84,4 +90,13 @@ export function createOpenRouterTranslator(
     const data = (await res.json()) as ChatResponse;
     return data.choices?.[0]?.message?.content?.trim() || text;
   };
+}
+
+/**
+ * Backward-compatible OpenRouter-named helper.
+ */
+export function createOpenRouterTranslator(
+  opts: OpenRouterLiveOptions = {},
+): AsyncTranslator {
+  return createChatTranslator(opts);
 }

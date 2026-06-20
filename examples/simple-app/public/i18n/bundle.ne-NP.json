@@ -74,7 +74,7 @@
       },
       "cells": {
         "ne-NP": {
-          "plural=one": "तपाईंसँग {count} सन्देशहरू छन्",
+          "plural=one": "तपाईंसँग {count} सन्देशहरू छन्. yes",
           "plural=other": "तपाईं सँग {count} सन्देशहरू छन्"
         }
       },

@@ -2,7 +2,7 @@
  * Translator interface and implementations for the compile CLI.
  *
  * StubTranslator — offline, deterministic, matches the test fixture format.
- * OpenRouterTranslator — calls the OpenRouter chat-completions API.
+ * OpenRouterTranslator — calls an OpenAI-compatible chat-completions API.
  */
 import https from "node:https";
 
@@ -73,18 +73,28 @@ export class OpenRouterTranslator implements Translator {
   readonly model: string;
   readonly timeout: number;
   readonly retries: number;
+  readonly endpoint: string;
   private readonly apiKey: string;
   private readonly progress: (msg: string) => void;
 
   constructor(opts: {
     apiKey?: string;
     model?: string;
+    endpoint?: string;
     timeoutMs?: number;
     retries?: number;
     progress?: (msg: string) => void;
   } = {}) {
-    this.apiKey = opts.apiKey ?? process.env["OPENROUTER_API_KEY"] ?? "";
+    this.apiKey =
+      opts.apiKey ??
+      process.env["STRINGLOCALE_API_KEY"] ??
+      process.env["OPENROUTER_API_KEY"] ??
+      "";
     this.model = opts.model ?? "google/gemini-2.5-flash";
+    this.endpoint =
+      opts.endpoint ??
+      process.env["STRINGLOCALE_TRANSLATION_ENDPOINT"] ??
+      "https://openrouter.ai/api/v1/chat/completions";
     this.timeout = opts.timeoutMs ?? 60_000;
     this.retries = opts.retries ?? 3;
     this.progress = opts.progress ?? (() => {});
@@ -148,7 +158,7 @@ export class OpenRouterTranslator implements Translator {
       } catch (err) {
         lastErr = err;
         if (attempt < this.retries) {
-          this.progress(`[openrouter] attempt ${attempt} failed: ${err}`);
+          this.progress(`[translator] attempt ${attempt} failed: ${err}`);
         }
       }
     }
@@ -156,16 +166,21 @@ export class OpenRouterTranslator implements Translator {
   }
 
   private fetchJson(body: string): Promise<ChatResponse> {
+    const url = new URL(this.endpoint);
     return new Promise((resolve, reject) => {
       const req = https.request(
         {
-          hostname: "openrouter.ai",
-          path: "/api/v1/chat/completions",
+          protocol: url.protocol,
+          hostname: url.hostname,
+          port: url.port ? Number(url.port) : undefined,
+          path: `${url.pathname}${url.search}`,
           method: "POST",
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${this.apiKey}`,
-            "HTTP-Referer": "https://github.com/stringlocale/stringlocale",
+            ...(url.hostname === "openrouter.ai"
+              ? { "HTTP-Referer": "https://github.com/stringlocale/stringlocale" }
+              : {}),
           },
           timeout: this.timeout,
         },
@@ -176,7 +191,7 @@ export class OpenRouterTranslator implements Translator {
             try {
               resolve(JSON.parse(data) as ChatResponse);
             } catch {
-              reject(new Error(`Invalid JSON from OpenRouter: ${data.slice(0, 200)}`));
+              reject(new Error(`Invalid JSON from translator: ${data.slice(0, 200)}`));
             }
           });
         },
@@ -184,7 +199,7 @@ export class OpenRouterTranslator implements Translator {
       req.on("error", reject);
       req.on("timeout", () => {
         req.destroy();
-        reject(new Error("OpenRouter request timed out"));
+        reject(new Error("Translator request timed out"));
       });
       req.write(body);
       req.end();

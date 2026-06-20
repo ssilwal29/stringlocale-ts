@@ -65,6 +65,7 @@ import { cellCount, compileStrings, discover } from "./compile";
 import { check, formatReport } from "./check";
 import { prune } from "./prune";
 import { OpenRouterTranslator, StubTranslator } from "./translate";
+import { serveReview } from "./review";
 
 // ── locale validation ─────────────────────────────────────────────────────────
 
@@ -96,7 +97,8 @@ function usage() {
       `Subcommands:\n` +
       `  compile   discover strings, draft translations, write bundles\n` +
       `  check     CI gate: fail on missing/orphaned/stale/drift\n` +
-      `  prune     remove orphaned entries from a bundle\n\n` +
+      `  prune     remove orphaned entries from a bundle\n` +
+      `  review    serve a local web UI to review and edit bundles\n\n` +
       `Run 'stringlocale <subcommand> --help' for subcommand options.\n`,
   );
 }
@@ -115,8 +117,10 @@ interface ParsedArgs {
   strictDiscover: boolean;
   maxWorkers: number | undefined;
   model: string;
+  translatorEndpoint: string;
   openrouterTimeout: number;
   openrouterRetries: number;
+  port: number;
   help: boolean;
 }
 
@@ -133,8 +137,12 @@ function parseArgs(argv: string[]): ParsedArgs {
     strictDiscover: false,
     maxWorkers: undefined,
     model: process.env["STRINGLOCALE_MODEL"] ?? "google/gemini-2.5-flash",
+    translatorEndpoint:
+      process.env["STRINGLOCALE_TRANSLATION_ENDPOINT"] ??
+      "https://openrouter.ai/api/v1/chat/completions",
     openrouterTimeout: Number(process.env["STRINGLOCALE_OPENROUTER_TIMEOUT"] ?? 60),
     openrouterRetries: Number(process.env["STRINGLOCALE_OPENROUTER_RETRIES"] ?? 3),
+    port: 3000,
     help: false,
   };
 
@@ -195,11 +203,18 @@ function parseArgs(argv: string[]): ParsedArgs {
       case "--model":
         args.model = next("--model");
         break;
+      case "--translator-endpoint":
+      case "--openrouter-endpoint":
+        args.translatorEndpoint = next(a);
+        break;
       case "--openrouter-timeout":
         args.openrouterTimeout = Number(next("--openrouter-timeout"));
         break;
       case "--openrouter-retries":
         args.openrouterRetries = Number(next("--openrouter-retries"));
+        break;
+      case "--port":
+        args.port = Number(next("--port"));
         break;
       default:
         // Positional after cmd — treat as extra source.
@@ -234,21 +249,25 @@ async function cmdCompile(args: ParsedArgs): Promise<number> {
 
   // Select translator.
   let translator;
-  if (args.stub || !process.env["OPENROUTER_API_KEY"]) {
+  const apiKey =
+    process.env["STRINGLOCALE_API_KEY"] ?? process.env["OPENROUTER_API_KEY"];
+  if (args.stub || !apiKey) {
     const reason = args.stub
       ? "--stub flag"
-      : "OPENROUTER_API_KEY not set";
+      : "STRINGLOCALE_API_KEY / OPENROUTER_API_KEY not set";
     progress(`StubTranslator selected (${reason})`);
     translator = new StubTranslator();
   } else {
     translator = new OpenRouterTranslator({
+      apiKey,
       model: args.model,
+      endpoint: args.translatorEndpoint,
       timeoutMs: args.openrouterTimeout * 1000,
       retries: args.openrouterRetries,
       progress,
     });
     progress(
-      `OpenRouterTranslator selected (model=${translator.model}, ` +
+      `Translator selected (model=${translator.model}, endpoint=${translator.endpoint}, ` +
         `timeout=${translator.timeout / 1000}s, retries=${translator.retries})`,
     );
   }
@@ -323,6 +342,11 @@ async function cmdPrune(args: ParsedArgs): Promise<number> {
   return 0;
 }
 
+async function cmdReview(args: ParsedArgs): Promise<number> {
+  serveReview(args.out, args.port);
+  return new Promise(() => {}); // keep the process alive
+}
+
 // ── main ──────────────────────────────────────────────────────────────────────
 
 async function main(argv: string[]): Promise<number> {
@@ -351,6 +375,8 @@ async function main(argv: string[]): Promise<number> {
       return cmdCheck(args);
     case "prune":
       return cmdPrune(args);
+    case "review":
+      return cmdReview(args);
     default:
       err(`unknown subcommand: ${args.cmd || "(none)"}. Use compile, check, or prune.`);
       usage();

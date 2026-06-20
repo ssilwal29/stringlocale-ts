@@ -35,17 +35,17 @@ source text straight from the declaration; the others render compiled
 translations. Switching to a not-yet-loaded locale fetches its bundle lazily.
 
 The **This month** row is a `Param.userAdapted` value — the one online piece.
-Type into it and the text is translated live via OpenRouter as you go (debounced).
+Type into it and the text is translated live via your configured router as you go (debounced).
 Without a key it falls back to the offline sync adapter, which just localizes the
 digits. To enable live translation:
 
 ```bash
-cp .env.example .env.local      # then put your key in VITE_OPENROUTER_API_KEY
+cp .env.example .env.local      # then set VITE_TRANSLATION_API_KEY
 ```
 
 > **Dev-only key.** Vite inlines `VITE_*` vars into the browser bundle, so this
 > exposes the key — fine for local dev, never for production. In a real app,
-> point `createOpenRouterTranslator({ endpoint })` at your own backend proxy.
+> point `createChatTranslator({ endpoint })` at your own backend proxy.
 
 > **Local package.** `stringlocale` isn't on npm yet, so this example depends on
 > the repo via `file:../..` and [vite.config.ts](vite.config.ts) aliases
@@ -133,7 +133,7 @@ A single string becomes, for example:
 }
 ```
 
-* Set `OPENROUTER_API_KEY` to draft real LLM translations; without it (or with
+* Set `STRINGLOCALE_API_KEY` (or `OPENROUTER_API_KEY`) to draft real LLM translations; without it (or with
   `npm run i18n -- --stub`) you get deterministic placeholders to wire things up.
 * Re-running only re-translates strings whose **source text changed**
   (incremental reuse) — adding `nl-NL` here reused the existing `ne-NP`/`ar-SA`

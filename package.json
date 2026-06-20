@@ -1,6 +1,6 @@
 {
   "name": "stringlocale",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "LLM-powered, build-time localization with a pure-lookup offline runtime for TypeScript and React.",
   "type": "module",
   "license": "MIT",

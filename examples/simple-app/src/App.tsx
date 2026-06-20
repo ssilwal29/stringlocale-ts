@@ -8,7 +8,7 @@
  */
 import * as React from "react";
 import type { Param, ResolveArgs, Store, StringLocale } from "stringlocale";
-import { createOpenRouterTranslator } from "stringlocale";
+import { createChatTranslator } from "stringlocale";
 import { StringLocaleProvider, useTranslation } from "stringlocale/react";
 
 import {
@@ -31,7 +31,7 @@ const LOCALES = [
 ] as const;
 
 // Param.userAdapted is driven by the liveTranslator on the provider.
-// With VITE_OPENROUTER_API_KEY set: text is translated live via OpenRouter as
+// With VITE_TRANSLATION_API_KEY (or VITE_OPENROUTER_API_KEY) set: text is translated live as
 // the user types (debounced). The provider shows the last known translation
 // while a new request is in-flight — no reverting to source text.
 // Without a key: userAdapted behaves like Param.user() — text is passed through
@@ -39,10 +39,14 @@ const LOCALES = [
 //
 // Dev-only key. Vite inlines VITE_* vars into the browser bundle.
 // In production, set endpoint to your own backend proxy instead.
-const apiKey = (import.meta as { env?: Record<string, string> }).env
-  ?.VITE_OPENROUTER_API_KEY;
+const env = (import.meta as { env?: Record<string, string> }).env;
+const apiKey = env?.VITE_TRANSLATION_API_KEY ?? env?.VITE_OPENROUTER_API_KEY;
+const endpoint =
+  env?.VITE_TRANSLATION_ENDPOINT ??
+  env?.VITE_OPENROUTER_ENDPOINT ??
+  "https://openrouter.ai/api/v1/chat/completions";
 const liveTranslator = apiKey
-  ? createOpenRouterTranslator({ apiKey, referer: "http://localhost:5173" })
+  ? createChatTranslator({ apiKey, endpoint, referer: "http://localhost:5173" })
   : undefined;
 
 // Debounce a fast-changing value so we don't translate on every keystroke.
@@ -176,7 +180,7 @@ function DemoRow({
 }
 
 // Param.userAdapted in action: type below and the text is translated live via
-// the provider's liveTranslator (OpenRouter). With no key it falls back to the
+// the provider's liveTranslator. With no key it falls back to the
 // sync adapter, which just localizes the digits. Debounced so we don't fire a
 // request on every keystroke; shows the source text until the translation lands.
 function LiveAdaptedRow() {
@@ -317,7 +321,8 @@ export default function App({ store }: { store: Store }) {
           Arabic. <strong>Bio</strong> is <code>Param.user()</code> (verbatim
           everywhere); <strong>This month</strong> is{" "}
           <code>Param.userAdapted()</code> — type into it and it translates live
-          via OpenRouter (set <code>VITE_OPENROUTER_API_KEY</code>). Without a
+          via your configured router (set <code>VITE_TRANSLATION_API_KEY</code>
+          and optionally <code>VITE_TRANSLATION_ENDPOINT</code>). Without a
           key the text is passed through verbatim; the template label is still
           localized from the compiled bundle.
         </p>
