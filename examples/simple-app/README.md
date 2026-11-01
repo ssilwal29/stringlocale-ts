@@ -47,10 +47,11 @@ cp .env.example .env.local      # then set VITE_TRANSLATION_API_KEY
 > exposes the key — fine for local dev, never for production. In a real app,
 > point `createChatTranslator({ endpoint })` at your own backend proxy.
 
-> **Local package.** `stringlocale` isn't on npm yet, so this example depends on
-> the repo via `file:../..` and [vite.config.ts](vite.config.ts) aliases
-> `stringlocale` to `../../src`, so dev always runs against the latest source
-> with no build step. In a real app you'd `npm install stringlocale` and drop both.
+> **Linked to the repo source.** `stringlocale` is published on npm
+> (`npm install stringlocale`). This example instead depends on the repo via
+> `file:../..` and [vite.config.ts](vite.config.ts) aliases `stringlocale` to
+> `../../src`, so dev always runs against the latest unreleased source with no
+> build step. In your own app, `npm install stringlocale` and drop both.
 
 ---
 

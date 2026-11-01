@@ -100,6 +100,10 @@ inbox.resolve({ store, locale: "ne-NP" }, { count: 5 });
 // "तपाईंसँग ५ सन्देशहरू छन्"  (Devanagari digits, Nepali plural)
 ```
 
+`loadFromUrl` fetches over HTTP (browsers, or an absolute `http(s)://` URL). In
+a Node script, server or CLI, read the bundle from disk with `loadFromFile` from
+`stringlocale/node` instead — see [Node scripts, servers and CLIs](#node-scripts-servers-and-clis).
+
 In React, wrap the app in `<StringLocaleProvider>` and call `useTranslation()` —
 see [Resolving](#resolving).
 
@@ -320,16 +324,52 @@ export default function App() {
 Switching to a not-yet-loaded locale (split bundles) lazily fetches it and
 re-renders consumers when it lands; `useTranslation().loading` reflects this.
 
-### Plain TypeScript (no React)
+### Plain TypeScript / JavaScript (no React): `StringLocale.resolve`
+
+Outside React you resolve a string by calling **`resolve` on the declared
+`StringLocale` itself**, passing the store and locale as a context object and the
+placeholder values (plus axis values such as `gender`) as the second argument.
+There is no `store.t()` or `store.resolve()` — the `Store` only holds bundles.
+
+```ts
+resolve(ctx: { store: Store; locale: string; adapter?: Adapter }, args?: Record<string, unknown>): string
+```
 
 ```ts
 import { loadCombined } from "stringlocale";
-import bundle from "./i18n/bundle.json";
-import { fee } from "./strings";
+import bundle from "./i18n/bundle.json"; // bundlers (Vite, webpack, esbuild); for plain Node see below
+import { fee, greeting, inbox } from "./strings";
 
 const store = loadCombined(bundle);
-fee.resolve({ store, locale: "ne-NP" }, { creator: "Jane Doe", amount: 2500 });
+const ctx = { store, locale: "ne-NP" };
+
+fee.resolve(ctx, { creator: "Jane Doe", amount: 2500 });
+greeting.resolve(ctx, { name: "Sita", gender: "female" }); // gender picks the variant
+inbox.resolve(ctx, { count: 5 });                           // count picks the plural form
 ```
+
+A locale with no translations (or a string missing from the bundle) falls back
+along its fallback chain and finally to the English source text.
+
+### Node scripts, servers and CLIs
+
+`stringlocale/node` reads the compiler's `--out` directory straight from disk and
+returns a ready store. It accepts the directory, a `bundle.json` / `manifest.json`
+path, or a `file:` URL; split bundles are merged eagerly, so every locale
+resolves immediately (no `preload` step).
+
+```ts
+import { loadFromFile } from "stringlocale/node";
+import { inbox } from "./strings.js";
+
+// relative to this module (recommended), or loadFromFile("public/i18n") relative to cwd
+const store = loadFromFile(new URL("./i18n", import.meta.url));
+console.log(inbox.resolve({ store, locale: "ne-NP" }, { count: 5 }));
+```
+
+Prefer `loadFromFile` over the alternatives in Node: `loadFromUrl("i18n")` throws
+there (Node's `fetch` needs an absolute `http(s)://` URL), and importing JSON
+directly requires an import attribute — `import bundle from "./i18n/bundle.json" with { type: "json" }`.
 
 See [`examples/simple-app`](examples/simple-app) for a runnable Vite + React app
 that walks through all three steps.

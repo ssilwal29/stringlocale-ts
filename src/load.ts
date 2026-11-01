@@ -41,6 +41,18 @@ export async function loadFromUrl(
 ): Promise<Store> {
   const base = baseUrl.endsWith("/") ? baseUrl : baseUrl + "/";
 
+  // In Node, `fetch` only understands absolute http(s) URLs. A bare path such
+  // as "i18n" or "./public/i18n" fails deep inside undici with an unhelpful
+  // error, so point people at the disk loader instead.
+  const isNode = typeof process !== "undefined" && !!process.versions?.node;
+  if (isNode && !/^https?:\/\//i.test(base)) {
+    throw new Error(
+      `loadFromUrl fetches over HTTP and needs an absolute http(s) URL in Node (got "${baseUrl}"). ` +
+        `To read bundles from disk, use loadFromFile from "stringlocale/node", ` +
+        `or parse bundle.json yourself and pass it to loadCombined().`,
+    );
+  }
+
   function doFetch(url: string): Promise<Response> {
     if (opts.timeoutMs === undefined) return fetch(url);
     const controller = new AbortController();
